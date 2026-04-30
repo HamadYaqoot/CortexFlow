@@ -1,6 +1,5 @@
 
-# Light international version with currency
-html_light = '''<!DOCTYPE html>
+html_fixed = '''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -234,16 +233,15 @@ select option {
     align-items: stretch;
 }
 
-.currency-row select {
-    width: 110px;
-    flex-shrink: 0;
-    margin-bottom: 0;
-    text-align: center;
-}
-
 .currency-row input {
     flex: 1;
     margin-bottom: 0;
+}
+
+/* Fix: spacing between currency rows and after last row */
+.currency-row + .currency-row,
+.currency-row + select {
+    margin-top: 12px;
 }
 
 /* Animations */
@@ -281,9 +279,6 @@ select option {
     .card {
         padding: 22px;
         border-radius: 14px;
-    }
-    .currency-row select {
-        width: 90px;
     }
 }
 
@@ -338,15 +333,14 @@ We use this to calculate your financial risk and survival timeline.
 </select>
 
 <div class="currency-row">
-<select id="currencySymbol" style="display:none;"></select>
 <input type="number" id="inflow" placeholder="Monthly Cash Inflow">
 </div>
 
-<div class="currency-row" style="margin-top:12px;">
+<div class="currency-row">
 <input type="number" id="outflow" placeholder="Monthly Cash Outflow">
 </div>
 
-<div class="currency-row" style="margin-top:12px;">
+<div class="currency-row">
 <input type="number" id="reserve" placeholder="Cash Reserve">
 </div>
 
@@ -428,6 +422,10 @@ function getSymbol() {
   return currencySymbols[document.getElementById("currency").value] || '$';
 }
 
+function fmt(n) {
+  return Number(n).toLocaleString('en-US');
+}
+
 const inputs = ["inflow","outflow","reserve","stability","delay","flexibility","currency"];
 
 inputs.forEach(id => {
@@ -449,7 +447,7 @@ function calculate() {
 
   let runway = "N/A";
   if (net < 0 && outflow > 0) {
-    runway = (reserve / Math.abs(net)).toFixed(1) + " months";
+    runway = fmt((reserve / Math.abs(net)).toFixed(1)) + " months";
   }
 
   let risk = "LOW";
@@ -468,7 +466,7 @@ function calculate() {
 
   document.getElementById("resultsBox").innerHTML = `
   <b>Financial Snapshot</b><br><br>
-  💰 Net Cash Flow: ${sym}${net.toLocaleString()}<br>
+  💰 Net Cash Flow: ${sym}${fmt(net)}<br>
   ⏳ Runway: ${runway}<br>
   🚨 Risk Level: ${risk}<br><br>
   🧠 Insight:<br>${insight}
@@ -491,7 +489,7 @@ function submitForm() {
 </html>'''
 
 with open('/mnt/agents/output/cortexflow-international.html', 'w', encoding='utf-8') as f:
-    f.write(html_light)
+    f.write(html_fixed)
 
-print("Light version saved!")
-print("Both files updated with currency support.")
+print("Fixed international version saved!")
+print(f"File size: {len(html_fixed)} characters")
