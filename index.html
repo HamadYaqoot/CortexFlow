@@ -1,266 +1,497 @@
-<!DOCTYPE html>
+
+# Light international version with currency
+html_light = '''<!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>CortexFlow</title>
-   <style>
-       * {
-           margin: 0;
-           padding: 0;
-           box-sizing: border-box;
-       }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-       body {
-           min-height: 100vh;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-           font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-           padding: 20px;
-           overflow-x: hidden;
-       }
+<title>CortexFlow</title>
 
-       /* Animated background particles */
-       body::before {
-           content: '';
-           position: fixed;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           background: 
-               radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
-               radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-               radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.05) 0%, transparent 60%);
-           pointer-events: none;
-           z-index: 0;
-       }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-       .container {
-           position: relative;
-           z-index: 1;
-           text-align: center;
-           max-width: 600px;
-           width: 100%;
-           padding: 60px 40px;
-           background: rgba(30, 41, 59, 0.6);
-           backdrop-filter: blur(20px);
-           border: 1px solid rgba(255, 255, 255, 0.08);
-           border-radius: 24px;
-           box-shadow: 
-               0 25px 50px -12px rgba(0, 0, 0, 0.5),
-               0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-           animation: fadeInUp 0.8s ease-out;
-       }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-       @keyframes fadeInUp {
-           from {
-               opacity: 0;
-               transform: translateY(30px);
-           }
-           to {
-               opacity: 1;
-               transform: translateY(0);
-           }
-       }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #fafafa;
+    color: #171717;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
 
-       h1 {
-           font-size: 4rem;
-           font-weight: 800;
-           background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
-           -webkit-background-clip: text;
-           -webkit-text-fill-color: transparent;
-           background-clip: text;
-           letter-spacing: -2px;
-           margin-bottom: 16px;
-           position: relative;
-           display: inline-block;
-       }
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(99, 102, 241, 0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(34, 197, 94, 0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
 
-       h1::after {
-           content: '';
-           position: absolute;
-           bottom: -8px;
-           left: 50%;
-           transform: translateX(-50%);
-           width: 80px;
-           height: 4px;
-           background: linear-gradient(90deg, #38bdf8, #c084fc);
-           border-radius: 2px;
-       }
+.container {
+    max-width: 480px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+}
 
-       p {
-           font-size: 1.25rem;
-           color: #94a3b8;
-           margin-bottom: 40px;
-           line-height: 1.6;
-           font-weight: 400;
-       }
+h1 {
+    text-align: center;
+    color: #171717;
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 8px;
+    position: relative;
+}
 
-       .features {
-           display: flex;
-           flex-direction: column;
-           gap: 16px;
-           margin-bottom: 40px;
-           align-items: center;
-       }
+h1::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 4px;
+    background: linear-gradient(90deg, #6366f1, #22c55e);
+    border-radius: 2px;
+    margin: 14px auto 0;
+}
 
-       .feature-item {
-           display: flex;
-           align-items: center;
-           gap: 14px;
-           padding: 16px 28px;
-           background: rgba(15, 23, 42, 0.6);
-           border: 1px solid rgba(255, 255, 255, 0.06);
-           border-radius: 14px;
-           width: 100%;
-           max-width: 340px;
-           font-size: 1.05rem;
-           color: #e2e8f0;
-           transition: all 0.3s ease;
-           cursor: default;
-           position: relative;
-           overflow: hidden;
-       }
+p {
+    text-align: center;
+    color: #525252;
+    font-size: 14px;
+    line-height: 1.6;
+}
 
-       .feature-item::before {
-           content: '';
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-           transform: translateX(-100%);
-           transition: transform 0.6s ease;
-       }
+.card {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 16px;
+    margin-top: 24px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-       .feature-item:hover::before {
-           transform: translateX(100%);
-       }
+.card:hover {
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.06);
+    border-color: #d4d4d4;
+}
 
-       .feature-item:hover {
-           transform: translateX(8px);
-           border-color: rgba(56, 189, 248, 0.3);
-           box-shadow: 0 4px 20px rgba(56, 189, 248, 0.1);
-       }
+h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #171717;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-       .feature-item .icon {
-           font-size: 1.4rem;
-           flex-shrink: 0;
-           filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
-       }
+h2::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: linear-gradient(135deg, #6366f1, #22c55e);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
 
-       .feature-item:nth-child(1) .icon { color: #fbbf24; }
-       .feature-item:nth-child(2) .icon { color: #f87171; }
-       .feature-item:nth-child(3) .icon { color: #34d399; }
+input, select {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    color: #171717;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    outline: none;
+    appearance: none;
+}
 
-       a {
-           display: inline-flex;
-           align-items: center;
-           justify-content: center;
-           gap: 10px;
-           padding: 18px 40px;
-           background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
-           background-size: 200% 200%;
-           color: #ffffff;
-           text-decoration: none;
-           font-size: 1.1rem;
-           font-weight: 600;
-           border-radius: 14px;
-           border: none;
-           cursor: pointer;
-           transition: all 0.4s ease;
-           box-shadow: 
-               0 10px 30px -5px rgba(139, 92, 246, 0.4),
-               0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-           position: relative;
-           overflow: hidden;
-           letter-spacing: 0.3px;
-       }
+input::placeholder {
+    color: #a3a3a3;
+}
 
-       a::before {
-           content: '';
-           position: absolute;
-           top: 0;
-           left: -100%;
-           width: 100%;
-           height: 100%;
-           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-           transition: left 0.6s ease;
-       }
+input:hover, select:hover {
+    border-color: #d4d4d4;
+    background: #f5f5f5;
+}
 
-       a:hover::before {
-           left: 100%;
-       }
+input:focus, select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+    background: #ffffff;
+}
 
-       a:hover {
-           transform: translateY(-3px);
-           box-shadow: 
-               0 20px 40px -5px rgba(139, 92, 246, 0.5),
-               0 0 0 1px rgba(255, 255, 255, 0.15) inset;
-           background-position: 100% 0;
-       }
+select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+}
 
-       a:active {
-           transform: translateY(-1px);
-       }
+select option {
+    background: #ffffff;
+    color: #171717;
+}
 
-       a::after {
-           content: '→';
-           font-size: 1.2rem;
-           transition: transform 0.3s ease;
-       }
+.result-box {
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-top: 10px;
+    border: 1px solid #e5e5e5;
+    color: #404040;
+    line-height: 1.8;
+    transition: all 0.3s ease;
+    position: relative;
+}
 
-       a:hover::after {
-           transform: translateX(4px);
-       }
+.result-box b {
+    color: #171717;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
 
-       /* Floating animation for subtle movement */
-       @keyframes float {
-           0%, 100% { transform: translateY(0px); }
-           50% { transform: translateY(-10px); }
-       }
+.button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #171717;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    margin-top: 20px;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.2px;
+}
 
-       .container {
-           animation: fadeInUp 0.8s ease-out, float 6s ease-in-out infinite 0.8s;
-       }
+.button:hover {
+    background: #262626;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
 
-       /* Responsive */
-       @media (max-width: 480px) {
-           h1 { font-size: 2.8rem; }
-           .container { padding: 40px 24px; }
-           p { font-size: 1.1rem; }
-           .feature-item { font-size: 0.95rem; padding: 14px 20px; }
-           a { padding: 16px 32px; font-size: 1rem; }
-       }
-   </style>
+.button:active {
+    transform: translateY(0);
+    background: #000000;
+}
+
+.footer {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 30px;
+    color: #a3a3a3;
+    padding-bottom: 20px;
+}
+
+.currency-label {
+    font-size: 11px;
+    color: #737373;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.currency-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.currency-row select {
+    width: 110px;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.currency-row input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.08s;
+}
+
+.card:nth-child(4) {
+    animation-delay: 0.16s;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+    body {
+        padding: 16px;
+    }
+    h1 {
+        font-size: 2.2rem;
+    }
+    .card {
+        padding: 22px;
+        border-radius: 14px;
+    }
+    .currency-row select {
+        width: 90px;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #fafafa;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d4d4d4;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a3a3a3;
+}
+</style>
 </head>
+
 <body>
-   <div class="container">
-       <h1>CortexFlow</h1>
-       <p>Know your financial risk and what to do next — instantly.</p>
 
-       <div class="features">
-           <div class="feature-item">
-               <span class="icon">⚡</span>
-               <span>Analyze your cash flow</span>
-           </div>
-           <div class="feature-item">
-               <span class="icon">📉</span>
-               <span>Detect financial risks</span>
-           </div>
-           <div class="feature-item">
-               <span class="icon">💡</span>
-               <span>Get clear decisions</span>
-           </div>
-       </div>
+<div class="container">
 
-       <a href="YOUR_FORM_LINK">
-           Get My Financial Decision System
-       </a>
-   </div>
+<h1>CortexFlow</h1>
+<p>Know your financial risk and what to do next — instantly.</p>
+
+<div class="card">
+
+<h2>Analyze Your Financial Position</h2>
+<p style="text-align:left;font-size:12px;">
+We use this to calculate your financial risk and survival timeline.
+</p>
+
+<span class="currency-label">Currency</span>
+<select id="currency" style="margin-bottom:16px;">
+<option value="USD" selected>USD ($)</option>
+<option value="EUR">EUR (€)</option>
+<option value="GBP">GBP (£)</option>
+<option value="AED">AED (د.إ)</option>
+<option value="SAR">SAR (﷼)</option>
+<option value="QAR">QAR (﷼)</option>
+<option value="KWD">KWD (د.ك)</option>
+<option value="JPY">JPY (¥)</option>
+<option value="INR">INR (₹)</option>
+<option value="CAD">CAD (C$)</option>
+<option value="AUD">AUD (A$)</option>
+<option value="CHF">CHF (Fr)</option>
+</select>
+
+<div class="currency-row">
+<select id="currencySymbol" style="display:none;"></select>
+<input type="number" id="inflow" placeholder="Monthly Cash Inflow">
+</div>
+
+<div class="currency-row" style="margin-top:12px;">
+<input type="number" id="outflow" placeholder="Monthly Cash Outflow">
+</div>
+
+<div class="currency-row" style="margin-top:12px;">
+<input type="number" id="reserve" placeholder="Cash Reserve">
+</div>
+
+<select id="stability">
+<option value="">Revenue Stability</option>
+<option value="stable">Stable</option>
+<option value="medium">Slightly inconsistent</option>
+<option value="low">Very unpredictable</option>
+</select>
+
+<select id="delay">
+<option value="">Customer Payment Delay</option>
+<option value="fast">Paid immediately</option>
+<option value="medium">7–14 days</option>
+<option value="slow">30+ days</option>
+<option value="chaotic">Very unpredictable</option>
+</select>
+
+<select id="flexibility">
+<option value="">Expense Flexibility</option>
+<option value="low">Mostly fixed</option>
+<option value="medium">Mixed</option>
+<option value="high">Mostly variable</option>
+</select>
+
+<div class="result-box" id="resultsBox">
+Enter your data to see analysis
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Financial Risk Diagnostic</h2>
+
+<select id="concern">
+<option value="">Select your main concern</option>
+<option>Cash flow issues</option>
+<option>Late customer payments</option>
+<option>Unclear profitability</option>
+<option>Expenses too high</option>
+<option>Financial instability</option>
+</select>
+
+<select id="tracking">
+<option value="">Financial tracking level</option>
+<option>No tracking</option>
+<option>Basic tracking</option>
+<option>Advanced tracking</option>
+</select>
+
+<select id="urgency">
+<option value="">Urgency level</option>
+<option>Critical</option>
+<option>Important</option>
+<option>Moderate</option>
+</select>
+
+<input type="text" id="whatsapp" placeholder="WhatsApp Number">
+
+<button class="button" onclick="submitForm()">Analyze My Business</button>
+
+</div>
+
+<div class="footer">
+Built for modern businesses
+</div>
+
+</div>
+
+<script>
+
+const currencySymbols = {
+  USD: '$', EUR: '€', GBP: '£', AED: 'د.إ', SAR: '﷼', QAR: '﷼',
+  KWD: 'د.ك', JPY: '¥', INR: '₹', CAD: 'C$', AUD: 'A$', CHF: 'Fr'
+};
+
+function getSymbol() {
+  return currencySymbols[document.getElementById("currency").value] || '$';
+}
+
+const inputs = ["inflow","outflow","reserve","stability","delay","flexibility","currency"];
+
+inputs.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("input", calculate);
+});
+
+function calculate() {
+  const inflow = parseFloat(document.getElementById("inflow").value) || 0;
+  const outflow = parseFloat(document.getElementById("outflow").value) || 0;
+  const reserve = parseFloat(document.getElementById("reserve").value) || 0;
+
+  const stability = document.getElementById("stability").value;
+  const delay = document.getElementById("delay").value;
+  const flexibility = document.getElementById("flexibility").value;
+  const sym = getSymbol();
+
+  let net = inflow - outflow;
+
+  let runway = "N/A";
+  if (net < 0 && outflow > 0) {
+    runway = (reserve / Math.abs(net)).toFixed(1) + " months";
+  }
+
+  let risk = "LOW";
+
+  if (net < 0) risk = "HIGH";
+  if (stability === "low" || delay === "chaotic") risk = "HIGH";
+  if (flexibility === "low" && net <= 0) risk = "HIGH";
+  if (net >= 0 && (stability === "medium" || delay === "slow")) risk = "MEDIUM";
+
+  let insight = "Your business appears stable.";
+  if (risk === "HIGH") {
+    insight = "Your business is under financial pressure. Immediate action is required.";
+  } else if (risk === "MEDIUM") {
+    insight = "Your business is stable but exposed to potential risks.";
+  }
+
+  document.getElementById("resultsBox").innerHTML = `
+  <b>Financial Snapshot</b><br><br>
+  💰 Net Cash Flow: ${sym}${net.toLocaleString()}<br>
+  ⏳ Runway: ${runway}<br>
+  🚨 Risk Level: ${risk}<br><br>
+  🧠 Insight:<br>${insight}
+  `;
+}
+
+function submitForm() {
+
+  alert("Analyzing your financial data...");
+  setTimeout(() => {
+    alert("Your financial system is being prepared...");
+  }, 1000);
+
+  // Backend integration comes next step
+}
+
+</script>
+
 </body>
-</html>
+</html>'''
+
+with open('/mnt/agents/output/cortexflow-international.html', 'w', encoding='utf-8') as f:
+    f.write(html_light)
+
+print("Light version saved!")
+print("Both files updated with currency support.")
