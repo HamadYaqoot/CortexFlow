@@ -475,12 +475,32 @@ function calculate() {
 
 function submitForm() {
 
-  alert("Analyzing your financial data...");
-  setTimeout(() => {
-    alert("Your financial system is being prepared...");
-  }, 1000);
+  const data = {
+    inflow: document.getElementById("inflow").value,
+    outflow: document.getElementById("outflow").value,
+    reserve: document.getElementById("reserve").value,
+    stability: document.getElementById("stability").value,
+    delay: document.getElementById("delay").value,
+    flexibility: document.getElementById("flexibility").value,
+    concern: document.getElementById("concern").value,
+    tracking: document.getElementById("tracking").value,
+    urgency: document.getElementById("urgency").value,
+    whatsapp: document.getElementById("whatsapp").value
+  };
 
-  // Backend integration comes next step
+  alert("Analyzing your financial data...");
+
+  fetch("https://script.google.com/macros/s/AKfycbx9pDWsC8DTIjYfAurD9vIQkE4rpyNjSzmEEbXL0JAIf_V7vyTPjtqaI0Vq5qZyBKVd/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(response => {
+    alert("Financial system generated successfully.");
+  })
+  .catch(err => {
+    alert("Submission failed. Try again.");
+  });
 }
 
 </script>
