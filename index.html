@@ -1,1029 +1,1411 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CortexFlow — Financial Risk Intelligence</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CortexFlow — Financial Decision Intelligence</title>
+<noscript>
+  <style>.app{display:none}</style>
+</noscript>
+<style>
+/* ══════════════════════════════════════════
+   CORTEXFLOW DESIGN SYSTEM v2.0
+   Aesthetic: Institutional Fintech — Dark
+   ══════════════════════════════════════════ */
+:root {
+  --bg:          #0b0f1a;
+  --surface:     #111827;
+  --surface-2:   #1a2235;
+  --surface-3:   #1e2a40;
+  --border:      #1f2d45;
+  --border-2:    #2a3a56;
 
-    <!-- Premium Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+–text-1:      #f0f4ff;
+–text-2:      #94a3c4;
+–text-3:      #5a6a8a;
 
-    <style>
-        :root {
-            /* Light theme colours */
-            --bg-primary: #f8fafc;
-            --bg-card: rgba(255, 255, 255, 0.85);
-            --bg-card-solid: #ffffff;
-            --bg-input: #ffffff;
-            --bg-results: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #334155;
-            --text-muted: #64748b;
-            --border-light: #e2e8f0;
-            --border-medium: #cbd5e1;
-            --green: #16a34a;
-            --green-bright: #22c55e;
-            --green-deep: #15803d;
-            --amber: #d97706;
-            --amber-bright: #f59e0b;
-            --red: #dc2626;
-            --red-bright: #ef4444;
+–gold:        #f0a500;
+–gold-dim:    #c78800;
+–gold-bg:     rgba(240,165,0,0.08);
 
-            /* Glow & accent (toned down for light theme) */
-            --green-glow: rgba(22, 163, 74, 0.25);
-            --amber-glow: rgba(217, 119, 6, 0.25);
-            --red-glow: rgba(220, 38, 38, 0.25);
+–green:       #10b981;
+–green-bg:    rgba(16,185,129,0.08);
+–green-border:rgba(16,185,129,0.2);
 
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 20px;
-            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
-            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.06);
-            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+–amber:       #f59e0b;
+–amber-bg:    rgba(245,158,11,0.08);
+–amber-border:rgba(245,158,11,0.2);
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+–red:         #ef4444;
+–red-bg:      rgba(239,68,68,0.08);
+–red-border:  rgba(239,68,68,0.2);
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            -webkit-tap-highlight-color: transparent;
-        }
+–blue:        #3b82f6;
 
-        /* Neural network canvas (subtle) */
-        #neuralCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.25;
-        }
+–radius:      14px;
+–radius-sm:   9px;
+–radius-xs:   6px;
+–shadow:      0 4px 24px rgba(0,0,0,0.4);
+–shadow-sm:   0 2px 10px rgba(0,0,0,0.3);
+}
 
-        /* Ambient glow orbs (very soft) */
-        .ambient-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(140px);
-            pointer-events: none;
-            z-index: 0;
-            animation: orbFloat 14s ease-in-out infinite;
-            opacity: 0.15;
-        }
-        .ambient-orb.orb-1 {
-            width: 400px;
-            height: 400px;
-            background: #22c55e;
-            top: -120px;
-            right: -100px;
-        }
-        .ambient-orb.orb-2 {
-            width: 300px;
-            height: 300px;
-            background: #3b82f6;
-            bottom: -100px;
-            left: -80px;
-            animation-delay: -6s;
-        }
-        .ambient-orb.orb-3 {
-            width: 250px;
-            height: 250px;
-            background: #8b5cf6;
-            top: 45%;
-            left: 50%;
-            animation-delay: -10s;
-        }
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
 
-        @keyframes orbFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(40px, -30px) scale(1.1); }
-            50% { transform: translate(-20px, 25px) scale(0.95); }
-            75% { transform: translate(-35px, -20px) scale(1.08); }
-        }
+body {
+font-family: ‘Segoe UI’, system-ui, -apple-system, sans-serif;
+background: var(–bg);
+color: var(–text-1);
+line-height: 1.6;
+min-height: 100vh;
+padding: 28px 16px 48px;
+/* Subtle grid texture */
+background-image:
+linear-gradient(rgba(240,165,0,0.015) 1px, transparent 1px),
+linear-gradient(90deg, rgba(240,165,0,0.015) 1px, transparent 1px);
+background-size: 40px 40px;
+}
 
-        .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 540px;
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-        }
+.container {
+max-width: 480px;
+margin: 0 auto;
+}
 
-        /* Brand Header */
-        .brand-header {
-            text-align: center;
-            padding: 8px 0 4px;
-        }
-        .brand-icon {
-            display: inline-block;
-            margin-bottom: 6px;
-        }
-        .brand-icon svg {
-            width: 44px;
-            height: 44px;
-            filter: drop-shadow(0 0 12px rgba(22, 163, 74, 0.3));
-            animation: iconPulse 3s ease-in-out infinite;
-        }
-        @keyframes iconPulse {
-            0%, 100% { filter: drop-shadow(0 0 12px rgba(22, 163, 74, 0.3)); }
-            50% { filter: drop-shadow(0 0 20px rgba(22, 163, 74, 0.5)); }
-        }
-        .brand-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            background: linear-gradient(135deg, #15803d 0%, #22c55e 40%, #0f172a 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-            /* subtle shadow for depth */
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
-        }
-        .brand-tagline {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            letter-spacing: 0.02em;
-            font-weight: 400;
-        }
+/* ── HEADER ───────────────────────────────── */
+.header {
+text-align: center;
+margin-bottom: 28px;
+padding-top: 8px;
+}
+.logo {
+font-size: 26px;
+font-weight: 900;
+letter-spacing: -1px;
+color: var(–text-1);
+}
+.logo em {
+font-style: normal;
+color: var(–gold);
+}
+.logo-badge {
+display: inline-block;
+font-size: 9px;
+font-weight: 700;
+letter-spacing: 2px;
+color: var(–gold);
+background: var(–gold-bg);
+border: 1px solid rgba(240,165,0,0.25);
+border-radius: 4px;
+padding: 2px 6px;
+vertical-align: middle;
+margin-left: 6px;
+text-transform: uppercase;
+}
+.tagline {
+font-size: 12px;
+color: var(–text-3);
+margin-top: 6px;
+letter-spacing: 0.5px;
+}
 
-        /* Card */
-        .card {
-            background: var(--bg-card-solid);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            padding: 22px 20px;
-            box-shadow: var(--shadow-card);
-            transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
-            animation: cardEntry 0.6s ease-out forwards;
-        }
-        @supports (backdrop-filter: blur(12px)) {
-            .card {
-                background: var(--bg-card);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-            }
-        }
-        @keyframes cardEntry {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card:hover {
-            border-color: var(--border-medium);
-            box-shadow: var(--shadow-hover);
-        }
+/* ── CARD ─────────────────────────────────── */
+.card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 20px;
+margin-bottom: 14px;
+box-shadow: var(–shadow-sm);
+position: relative;
+overflow: hidden;
+}
+.card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(–gold-dim), transparent);
+opacity: 0;
+transition: opacity 0.4s;
+}
+.card.active::before { opacity: 1; }
 
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .card-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-        .card-icon.analysis {
-            background: rgba(22, 163, 74, 0.1);
-            color: #15803d;
-        }
-        .card-icon.diagnostic {
-            background: rgba(139, 92, 246, 0.1);
-            color: #7c3aed;
-        }
-        .card h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            color: var(--text-primary);
-            margin: 0;
-            line-height: 1.2;
-        }
-        .card .subtitle {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
+.section-label {
+font-size: 10px;
+font-weight: 700;
+letter-spacing: 1.5px;
+color: var(–text-3);
+text-transform: uppercase;
+margin-bottom: 16px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.section-label::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–border);
+}
 
-        /* Inputs */
-        .input-group {
-            margin-bottom: 10px;
-        }
-        .input-label {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-            transition: color var(--transition-fast);
-        }
-        .input-group:focus-within .input-label {
-            color: var(--green-deep);
-        }
-        input, select {
-            width: 100%;
-            padding: 13px 14px;
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--border-light);
-            background: var(--bg-input);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 0.01em;
-            transition: all var(--transition-fast);
-            appearance: none;
-            -webkit-appearance: none;
-            outline: none;
-        }
-        input { cursor: text; }
-        input::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-            opacity: 0.7;
-        }
-        input:focus, select:focus {
-            border-color: var(--green);
-            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.08);
-        }
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            padding-right: 38px;
-            cursor: pointer;
-        }
-        select option {
-            background: #ffffff;
-            color: #0f172a;
-        }
+/* ── FORM FIELDS ──────────────────────────── */
+.field { margin-bottom: 13px; }
 
-        /* Results Dashboard */
-        .results-dashboard {
-            background: var(--bg-results);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            margin-top: 14px;
-            transition: all var(--transition-smooth);
-        }
-        .results-dashboard.updating {
-            animation: resultFlash 0.35s ease-out;
-        }
-        @keyframes resultFlash {
-            0% { background: rgba(22, 163, 74, 0.06); }
-            100% { background: var(--bg-results); }
-        }
-        .result-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 7px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
-            font-size: 0.85rem;
-        }
-        .result-row:last-child { border-bottom: none; }
-        .result-label {
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.78rem;
-            letter-spacing: 0.01em;
-        }
-        .result-value {
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 0.01em;
-            text-align: right;
-        }
-        .result-value.positive { color: #15803d; }
-        .result-value.negative { color: #dc2626; }
-        .result-value.neutral { color: #b45309; }
+label {
+display: block;
+font-size: 12px;
+font-weight: 600;
+color: var(–text-2);
+margin-bottom: 5px;
+letter-spacing: 0.2px;
+}
 
-        /* Risk Meter */
-        .risk-meter-container {
-            margin-top: 12px;
-            background: rgba(203, 213, 225, 0.3);
-            border-radius: 20px;
-            padding: 4px;
-            overflow: hidden;
-        }
-        .risk-meter-bar {
-            height: 8px;
-            border-radius: 20px;
-            transition: width var(--transition-bounce), background var(--transition-smooth);
-        }
-        .risk-meter-bar.low {
-            background: linear-gradient(90deg, #16a34a, #22c55e);
-            box-shadow: 0 0 10px rgba(22, 163, 74, 0.4);
-        }
-        .risk-meter-bar.medium {
-            background: linear-gradient(90deg, #d97706, #f59e0b);
-            box-shadow: 0 0 10px rgba(217, 119, 6, 0.4);
-        }
-        .risk-meter-bar.high {
-            background: linear-gradient(90deg, #dc2626, #ef4444);
-            box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
-            animation: dangerPulseLight 1.2s infinite;
-        }
-        @keyframes dangerPulseLight {
-            0%, 100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); }
-            50% { box-shadow: 0 0 18px rgba(220, 38, 38, 0.65); }
-        }
-        .risk-score-badge {
-            display: inline-block;
-            font-weight: 700;
-            font-size: 0.75rem;
-            padding: 3px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.03em;
-            margin-top: 8px;
-        }
-        .risk-score-badge.low {
-            background: rgba(22, 163, 74, 0.1);
-            color: #15803d;
-            border: 1px solid rgba(22, 163, 74, 0.25);
-        }
-        .risk-score-badge.medium {
-            background: rgba(217, 119, 6, 0.1);
-            color: #b45309;
-            border: 1px solid rgba(217, 119, 6, 0.25);
-        }
-        .risk-score-badge.high {
-            background: rgba(220, 38, 38, 0.1);
-            color: #b91c1c;
-            border: 1px solid rgba(220, 38, 38, 0.3);
-            animation: dangerPulseLight 1.2s infinite;
-        }
+input[type=“number”],
+input[type=“text”],
+input[type=“tel”],
+input[type=“email”],
+select {
+width: 100%;
+padding: 10px 12px;
+background: var(–surface-2);
+border: 1.5px solid var(–border-2);
+border-radius: var(–radius-sm);
+font-size: 15px;
+color: var(–text-1);
+transition: border-color 0.2s, box-shadow 0.2s;
+-webkit-appearance: none;
+appearance: none;
+font-family: inherit;
+}
+input[type=“number”],
+input[type=“tel”] {
+font-family: ‘Courier New’, ‘Consolas’, monospace;
+letter-spacing: 0.5px;
+}
+input:focus, select:focus {
+outline: none;
+border-color: var(–gold);
+box-shadow: 0 0 0 3px var(–gold-bg);
+}
+select {
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘7’ viewBox=‘0 0 12 7’%3E%3Cpath d=‘M1 1l5 4.5L11 1’ stroke=’%235a6a8a’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’ stroke-linejoin=‘round’/%3E%3C/svg%3E”);
+background-repeat: no-repeat;
+background-position: right 12px center;
+padding-right: 32px;
+cursor: pointer;
+}
+select option { background: #1a2235; }
 
-        /* Insight Box */
-        .insight-box {
-            margin-top: 10px;
-            padding: 12px 14px;
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            line-height: 1.5;
-            font-weight: 500;
-            border-left: 3px solid transparent;
-        }
-        .insight-box.info {
-            background: rgba(59, 130, 246, 0.06);
-            border-left-color: #3b82f6;
-            color: #1e40af;
-        }
-        .insight-box.warning {
-            background: rgba(245, 158, 11, 0.06);
-            border-left-color: #f59e0b;
-            color: #92400e;
-        }
-        .insight-box.danger {
-            background: rgba(239, 68, 68, 0.06);
-            border-left-color: #ef4444;
-            color: #991b1b;
-        }
-        .insight-box.success {
-            background: rgba(34, 197, 94, 0.06);
-            border-left-color: #22c55e;
-            color: #166534;
-        }
+input::placeholder { color: var(–text-3); }
+input:disabled, select:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* Section Divider */
-        .section-divider {
-            height: 1px;
-            background: var(--border-light);
-            margin: 20px 0 16px;
-        }
+/* Honeypot — never visible */
+.hp { display:none!important; visibility:hidden!important; position:absolute!important; left:-9999px; }
 
-        /* Button */
-        .button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            text-align: center;
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-            color: #ffffff;
-            padding: 15px 20px;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 0.02em;
-            border: none;
-            cursor: pointer;
-            font-family: 'Space Grotesk', sans-serif;
-            transition: all var(--transition-smooth);
-            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
-        }
-        .button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.35);
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-        }
-        .button:active {
-            transform: scale(0.97);
-        }
-        .button .btn-icon { font-size: 1.2rem; }
+/* ── LIVE RESULTS PANEL ───────────────────── */
+#results-panel { display: none; }
+#results-panel.visible { display: block; }
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-120px);
-            background: #ffffff;
-            border: 1px solid var(--border-medium);
-            border-radius: var(--radius-md);
-            padding: 14px 20px;
-            z-index: 1000;
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.01em;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-            transition: transform var(--transition-bounce);
-            pointer-events: none;
-            text-align: center;
-            max-width: 90vw;
-            color: var(--text-primary);
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); }
-        .toast.success {
-            border-color: #22c55e;
-            color: #15803d;
-        }
-        .toast.info-toast {
-            border-color: #3b82f6;
-            color: #1e40af;
-        }
+/* Risk Badge */
+.risk-badge {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 12px 14px;
+border-radius: var(–radius-sm);
+margin-bottom: 14px;
+border: 1px solid;
+}
+.risk-badge.risk-low  { background: var(–green-bg); border-color: var(–green-border); }
+.risk-badge.risk-medium { background: var(–amber-bg); border-color: var(–amber-border); }
+.risk-badge.risk-high { background: var(–red-bg); border-color: var(–red-border); }
 
-        #actionOutput {
-            margin-top: 16px;
-        }
+.risk-pulse {
+width: 10px; height: 10px;
+border-radius: 50%;
+flex-shrink: 0;
+position: relative;
+}
+.risk-pulse::after {
+content: ‘’;
+position: absolute;
+inset: -3px;
+border-radius: 50%;
+opacity: 0.4;
+animation: pulse 2s ease-in-out infinite;
+}
+.risk-low  .risk-pulse { background: var(–green); }
+.risk-medium .risk-pulse { background: var(–amber); }
+.risk-high .risk-pulse { background: var(–red); }
+.risk-low  .risk-pulse::after { background: var(–green); }
+.risk-medium .risk-pulse::after { background: var(–amber); }
+.risk-high .risk-pulse::after { background: var(–red); }
 
-        .footer {
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            letter-spacing: 0.03em;
-            padding: 6px 0 0;
-            opacity: 0.8;
-        }
-        .footer .dot {
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: var(--green);
-            margin: 0 6px;
-            animation: dotBlinkLight 2s infinite;
-        }
-        .footer .dot:nth-child(2) { animation-delay: 0.3s; }
-        .footer .dot:nth-child(3) { animation-delay: 0.6s; }
-        @keyframes dotBlinkLight {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
+@keyframes pulse {
+0%,100% { transform: scale(1); opacity: 0.4; }
+50% { transform: scale(1.6); opacity: 0; }
+}
 
-        /* Responsive */
-        @media (max-width: 420px) {
-            .container { max-width: 100%; gap: 16px; }
-            .card { padding: 16px 14px; border-radius: var(--radius-md); }
-            .brand-name { font-size: 1.7rem; }
-            input, select { padding: 11px 12px; font-size: 0.82rem; }
-            .button { padding: 13px 16px; font-size: 0.88rem; }
-            .result-value { font-size: 0.8rem; }
-        }
-        @media (min-width: 520px) {
-            .container { max-width: 540px; }
-            .card { padding: 26px 24px; }
-            .brand-name { font-size: 2.4rem; }
-        }
-    </style>
+.risk-badge-text { flex: 1; }
+.risk-level-label {
+font-size: 11px;
+font-weight: 800;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+}
+.risk-low  .risk-level-label { color: var(–green); }
+.risk-medium .risk-level-label { color: var(–amber); }
+.risk-high .risk-level-label { color: var(–red); }
+.risk-badge-sub {
+font-size: 11px;
+color: var(–text-3);
+margin-top: 1px;
+}
+
+/* Score Bars */
+.score-bars { margin-bottom: 14px; }
+.score-bar-item { margin-bottom: 8px; }
+.score-bar-meta {
+display: flex;
+justify-content: space-between;
+font-size: 11px;
+color: var(–text-3);
+margin-bottom: 4px;
+font-family: ‘Courier New’, monospace;
+}
+.score-bar-track {
+height: 5px;
+background: var(–surface-3);
+border-radius: 3px;
+overflow: hidden;
+}
+.score-bar-fill {
+height: 100%;
+border-radius: 3px;
+transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.bar-stress     { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.bar-reliability{ background: linear-gradient(90deg, #f59e0b, #10b981); }
+.bar-rigidity   { background: linear-gradient(90deg, #10b981, #f59e0b); }
+
+/* Metric Row */
+.metrics-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 14px;
+}
+.metric-box {
+background: var(–surface-2);
+border: 1px solid var(–border);
+border-radius: var(–radius-sm);
+padding: 10px 12px;
+}
+.metric-box-label {
+font-size: 10px;
+font-weight: 600;
+letter-spacing: 0.8px;
+text-transform: uppercase;
+color: var(–text-3);
+margin-bottom: 4px;
+}
+.metric-box-value {
+font-size: 15px;
+font-weight: 700;
+font-family: ‘Courier New’, ‘Consolas’, monospace;
+letter-spacing: -0.5px;
+}
+.val-positive { color: var(–green); }
+.val-negative { color: var(–red); }
+.val-warning  { color: var(–amber); }
+.val-neutral  { color: var(–text-2); }
+
+/* Narrative */
+.narrative {
+font-size: 13px;
+color: var(–text-2);
+line-height: 1.65;
+margin-bottom: 12px;
+padding: 12px;
+background: var(–surface-2);
+border-radius: var(–radius-sm);
+border-left: 3px solid var(–gold-dim);
+}
+
+/* Bullets */
+.bullets {
+font-size: 12.5px;
+color: var(–text-2);
+line-height: 1.6;
+}
+.bullet-item {
+display: flex;
+gap: 8px;
+padding: 5px 0;
+border-bottom: 1px solid var(–border);
+}
+.bullet-item:last-child { border-bottom: none; }
+.bullet-dot {
+color: var(–gold);
+font-weight: 700;
+flex-shrink: 0;
+margin-top: 1px;
+}
+
+/* Callout */
+.callout {
+display: none;
+margin-top: 12px;
+padding: 11px 13px;
+border-radius: var(–radius-sm);
+font-size: 12.5px;
+font-weight: 500;
+border: 1px solid;
+}
+.callout.visible { display: flex; align-items: flex-start; gap: 8px; }
+.callout.level-medium { background: var(–amber-bg); border-color: var(–amber-border); color: #f5c97b; }
+.callout.level-high   { background: var(–red-bg); border-color: var(–red-border); color: #f87171; }
+.callout-icon { font-size: 14px; flex-shrink: 0; }
+
+/* ── BUTTON ───────────────────────────────── */
+.btn {
+width: 100%;
+padding: 14px 20px;
+border: none;
+border-radius: var(–radius-sm);
+font-size: 14px;
+font-weight: 700;
+letter-spacing: 0.3px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+font-family: inherit;
+}
+.btn:active:not(:disabled) { transform: translateY(1px); }
+
+.btn-gold {
+background: var(–gold);
+color: #0b0f1a;
+}
+.btn-gold:hover:not(:disabled) { background: #fdb825; box-shadow: 0 0 20px rgba(240,165,0,0.25); }
+.btn-gold:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-risk-high   { background: var(–red); color: #fff; }
+.btn-risk-high:hover:not(:disabled) { background: #dc2626; box-shadow: 0 0 18px rgba(239,68,68,0.25); }
+
+.btn-risk-medium { background: var(–amber); color: #0b0f1a; }
+.btn-risk-medium:hover:not(:disabled) { background: #fbbf24; }
+
+.btn-risk-low    { background: var(–green); color: #fff; }
+.btn-risk-low:hover:not(:disabled) { background: #059669; }
+
+.btn-ghost {
+background: var(–surface-2);
+color: var(–text-2);
+border: 1px solid var(–border-2);
+font-size: 13px;
+padding: 10px;
+margin-top: 8px;
+}
+.btn-ghost:hover { background: var(–surface-3); }
+
+/* Spinner */
+.spinner {
+width: 16px; height: 16px;
+border: 2px solid rgba(0,0,0,0.25);
+border-top-color: rgba(0,0,0,0.8);
+border-radius: 50%;
+animation: spin 0.65s linear infinite;
+display: none;
+}
+.btn-risk-high .spinner,
+.btn-risk-low  .spinner { border-color: rgba(255,255,255,0.25); border-top-color: #fff; }
+.spinner.on { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SUCCESS CARD ─────────────────────────── */
+#success-card { display: none; }
+#success-card.visible { display: block; animation: slideIn 0.35s ease; }
+
+@keyframes slideIn {
+from { opacity: 0; transform: translateY(10px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+.success-header {
+text-align: center;
+margin-bottom: 20px;
+}
+.success-check {
+width: 52px; height: 52px;
+border-radius: 50%;
+background: var(–green-bg);
+border: 2px solid var(–green-border);
+display: flex; align-items: center; justify-content: center;
+font-size: 22px;
+margin: 0 auto 12px;
+}
+.success-title {
+font-size: 19px;
+font-weight: 800;
+letter-spacing: -0.5px;
+margin-bottom: 4px;
+}
+.success-sub {
+font-size: 12px;
+color: var(–text-3);
+}
+
+.next-step-block {
+padding: 14px;
+border-radius: var(–radius-sm);
+margin-bottom: 12px;
+border: 1px solid;
+}
+.next-step-block.ns-high   { background: var(–red-bg); border-color: var(–red-border); }
+.next-step-block.ns-medium { background: var(–amber-bg); border-color: var(–amber-border); }
+.next-step-block.ns-low    { background: var(–green-bg); border-color: var(–green-border); }
+.next-step-title {
+font-size: 13px;
+font-weight: 700;
+margin-bottom: 5px;
+}
+.ns-high   .next-step-title { color: #f87171; }
+.ns-medium .next-step-title { color: #fcd34d; }
+.ns-low    .next-step-title { color: #6ee7b7; }
+.next-step-body {
+font-size: 12.5px;
+color: var(–text-2);
+margin-bottom: 10px;
+}
+.cta-link {
+display: inline-block;
+padding: 7px 16px;
+border-radius: var(–radius-xs);
+font-size: 12px;
+font-weight: 700;
+text-decoration: none;
+cursor: pointer;
+border: none;
+font-family: inherit;
+}
+.cta-link.red    { background: var(–red); color: #fff; }
+.cta-link.amber  { background: var(–amber); color: #0b0f1a; }
+.cta-link.green  { background: var(–green); color: #fff; }
+
+.lead-row {
+display: flex;
+gap: 8px;
+margin-top: 8px;
+}
+.lead-row input {
+flex: 1;
+padding: 8px 10px;
+font-size: 12px;
+}
+.lead-row button {
+padding: 8px 14px;
+font-size: 12px;
+font-weight: 700;
+border: none;
+border-radius: var(–radius-xs);
+cursor: pointer;
+font-family: inherit;
+white-space: nowrap;
+}
+
+.upsell-bar {
+border-top: 1px solid var(–border);
+padding-top: 14px;
+margin-top: 4px;
+}
+.upsell-bar p {
+font-size: 11.5px;
+color: var(–text-3);
+margin-bottom: 8px;
+line-height: 1.5;
+}
+.upsell-bar strong { color: var(–gold); font-size: 12px; }
+
+/* ── ERROR CARD ───────────────────────────── */
+#error-card { display: none; }
+#error-card.visible { display: block; animation: slideIn 0.25s ease; }
+.error-icon { text-align: center; font-size: 28px; margin-bottom: 8px; }
+.error-text {
+text-align: center;
+font-size: 13px;
+color: #f87171;
+margin-bottom: 14px;
+}
+
+/* ── RECOVERY BANNER ──────────────────────── */
+#recovery-banner {
+display: none;
+background: rgba(59,130,246,0.08);
+border: 1px solid rgba(59,130,246,0.2);
+border-radius: var(–radius-sm);
+padding: 11px 13px;
+margin-bottom: 14px;
+align-items: center;
+gap: 10px;
+}
+#recovery-banner.visible { display: flex; }
+.recovery-text { font-size: 12px; color: #93c5fd; flex: 1; }
+.recovery-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.btn-xs {
+padding: 5px 11px;
+border-radius: var(–radius-xs);
+font-size: 11px;
+font-weight: 700;
+cursor: pointer;
+border: none;
+font-family: inherit;
+}
+.btn-xs.primary { background: var(–blue); color: #fff; }
+.btn-xs.ghost   { background: var(–surface-2); color: var(–text-2); border: 1px solid var(–border-2); }
+
+/* ── DIVIDER / SPACING ────────────────────── */
+.spacer { height: 6px; }
+
+/* ── FOOTER ───────────────────────────────── */
+.footer {
+text-align: center;
+font-size: 10.5px;
+color: var(–text-3);
+padding-top: 20px;
+letter-spacing: 0.3px;
+}
+.footer a { color: var(–text-3); text-decoration: none; }
+
+/* ── FADE-IN ANIMATION ────────────────────── */
+.fade-up {
+animation: fadeUp 0.3s ease both;
+}
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(6px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── NOSCRIPT ─────────────────────────────── */
+noscript > div {
+max-width: 400px;
+margin: 80px auto;
+text-align: center;
+color: var(–text-2);
+font-size: 14px;
+line-height: 1.7;
+}
+</style>
+
 </head>
 <body>
+<noscript>
+  <div>
+    <div style="font-size:36px;margin-bottom:16px">⚠</div>
+    <strong style="color:#f0f4ff">CortexFlow requires JavaScript.</strong><br>
+    Please enable JavaScript in your browser settings.
+  </div>
+</noscript>
 
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
-    <canvas id="neuralCanvas"></canvas>
-    <div class="toast" id="toast"></div>
+<div class="container app">
 
-    <div class="container">
-        <header class="brand-header">
-            <div class="brand-icon">
-                <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="22" cy="22" r="20" stroke="#16a34a" stroke-width="2.5" fill="none" opacity="0.7"/>
-                    <circle cx="22" cy="22" r="8" fill="#22c55e" opacity="0.9"/>
-                    <circle cx="22" cy="10" r="3.5" fill="#15803d" opacity="0.9"/>
-                    <circle cx="34" cy="28" r="3" fill="#22c55e" opacity="0.8"/>
-                    <circle cx="10" cy="28" r="3" fill="#22c55e" opacity="0.8"/>
-                    <line x1="22" y1="13.5" x2="22" y2="18" stroke="#15803d" stroke-width="1.5" opacity="0.6"/>
-                    <line x1="31" y1="26" x2="27" y2="23.5" stroke="#16a34a" stroke-width="1.5" opacity="0.5"/>
-                    <line x1="13" y1="26" x2="17" y2="23.5" stroke="#16a34a" stroke-width="1.5" opacity="0.5"/>
-                </svg>
-            </div>
-            <h1 class="brand-name">CortexFlow</h1>
-            <p class="brand-tagline">Know your financial risk and what to do next — instantly.</p>
-        </header>
+  <!-- Header -->
 
-        <!-- Unified card -->
-        <div class="card" id="mainCard">
-            <!-- Section 1: Financial Analysis -->
-            <div class="card-header">
-                <div class="card-icon analysis">📊</div>
-                <div>
-                    <h2>Analyze Your Financial Position</h2>
-                    <p class="subtitle">Real‑time risk assessment — just enter your numbers.</p>
-                </div>
-            </div>
+  <div class="header">
+    <div class="logo">Cortex<em>Flow</em> <span class="logo-badge">BETA</span></div>
+    <div class="tagline">Financial Decision Intelligence for SMEs</div>
+  </div>
 
-            <div class="input-group">
-                <label class="input-label" for="inflow">Monthly Cash Inflow</label>
-                <input type="number" id="inflow" placeholder="e.g. 50000" inputmode="numeric">
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="outflow">Monthly Cash Outflow</label>
-                <input type="number" id="outflow" placeholder="e.g. 42000" inputmode="numeric">
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="reserve">Cash Reserve</label>
-                <input type="number" id="reserve" placeholder="e.g. 100000" inputmode="numeric">
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="stability">Revenue Stability</label>
-                <select id="stability">
-                    <option value="">Select revenue stability</option>
-                    <option value="stable">Stable</option>
-                    <option value="medium">Slightly inconsistent</option>
-                    <option value="low">Very unpredictable</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="delay">Customer Payment Delay</label>
-                <select id="delay">
-                    <option value="">Select payment delay pattern</option>
-                    <option value="fast">Paid immediately</option>
-                    <option value="medium">7–14 days</option>
-                    <option value="slow">30+ days</option>
-                    <option value="chaotic">Very unpredictable</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="flexibility">Expense Flexibility</label>
-                <select id="flexibility">
-                    <option value="">Select expense flexibility</option>
-                    <option value="low">Mostly fixed</option>
-                    <option value="medium">Mixed</option>
-                    <option value="high">Mostly variable</option>
-                </select>
-            </div>
+  <!-- Recovery Banner -->
 
-            <!-- Live Dashboard -->
-            <div class="results-dashboard" id="liveResults" role="status" aria-live="polite" aria-atomic="true">
-                <div style="text-align:center;color:#64748b;padding:10px 0;font-size:0.82rem;">
-                    Enter your data to see analysis
-                </div>
-            </div>
-
-            <!-- Section 2: Personalised Action Plan -->
-            <div class="section-divider"></div>
-            <div class="card-header">
-                <div class="card-icon diagnostic">🩺</div>
-                <div>
-                    <h2>Personalised Action Plan</h2>
-                    <p class="subtitle">Add context — we’ll tailor your next steps.</p>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label class="input-label" for="concern">Select your main concern</label>
-                <select id="concern">
-                    <option value="">Select your main concern</option>
-                    <option>Cash flow issues</option>
-                    <option>Late customer payments</option>
-                    <option>Unclear profitability</option>
-                    <option>Expenses too high</option>
-                    <option>Financial instability</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="tracking">Financial tracking level</label>
-                <select id="tracking">
-                    <option value="">Select tracking level</option>
-                    <option>No tracking</option>
-                    <option>Basic tracking</option>
-                    <option>Advanced tracking</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="urgency">Urgency level</label>
-                <select id="urgency">
-                    <option value="">Select urgency level</option>
-                    <option>Critical</option>
-                    <option>Important</option>
-                    <option>Moderate</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="whatsapp">WhatsApp Number</label>
-                <input type="text" id="whatsapp" placeholder="+1 (555) 123-4567" inputmode="tel">
-            </div>
-
-            <button class="button" id="actionBtn">
-                <span class="btn-icon">🔍</span> Generate My Action Plan
-            </button>
-
-            <!-- Recommendation output -->
-            <div id="actionOutput"></div>
-        </div>
-
-        <div class="footer">
-            Built for modern businesses <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </div>
+  <div id="recovery-banner" role="alert">
+    <span class="recovery-text">You have an unsaved analysis — would you like to resend it?</span>
+    <div class="recovery-actions">
+      <button class="btn-xs primary" id="btn-resend">Resend</button>
+      <button class="btn-xs ghost"   id="btn-discard">Discard</button>
     </div>
+  </div>
 
-    <script>
-        // ========== HTML escaping ==========
-        function escapeHTML(str) {
-            const div = document.createElement('div');
-            div.appendChild(document.createTextNode(str));
-            return div.innerHTML;
-        }
+  <!-- Engine Inputs -->
 
-        // ========== Neural canvas (light & paused when hidden) ==========
-        const canvas = document.getElementById('neuralCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [], animFrameId = null;
-        const particleCount = 42;
+  <div class="card" id="form-card">
+    <div class="section-label">Financial Inputs</div>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+```
+<!-- Honeypot — do not fill -->
+<div class="hp" aria-hidden="true">
+  <input type="text" name="website" id="__hp" tabindex="-1" autocomplete="off">
+</div>
 
-        class Particle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.3;
-                this.vy = (Math.random() - 0.5) * 0.3;
-                this.radius = Math.random() * 1.2 + 0.5;
-                this.opacity = Math.random() * 0.4 + 0.15;
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.x < -30) this.x = canvas.width + 30;
-                if (this.x > canvas.width + 30) this.x = -30;
-                if (this.y < -30) this.y = canvas.height + 30;
-                if (this.y > canvas.height + 30) this.y = -30;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(21, 128, 61, ${this.opacity})`; // dark green for light theme
-                ctx.fill();
-            }
-        }
+<div class="field">
+  <label for="inflow">Monthly Cash Inflow (USD)</label>
+  <input type="number" id="inflow" min="0" step="1" placeholder="0">
+</div>
+<div class="field">
+  <label for="outflow">Monthly Cash Outflow (USD)</label>
+  <input type="number" id="outflow" min="0" step="1" placeholder="0">
+</div>
+<div class="field">
+  <label for="reserve">Cash Reserve (USD)</label>
+  <input type="number" id="reserve" min="0" step="1" placeholder="0">
+</div>
+<div class="field">
+  <label for="stability">Revenue Stability</label>
+  <select id="stability">
+    <option value="">Select...</option>
+    <option value="100">Very Stable</option>
+    <option value="70">Moderately Stable</option>
+    <option value="30">Unstable</option>
+  </select>
+</div>
+<div class="field">
+  <label for="payment_delay">Customer Payment Delay</label>
+  <select id="payment_delay">
+    <option value="">Select...</option>
+    <option value="100">On time (0–15 days)</option>
+    <option value="50">Slightly delayed (15–45 days)</option>
+    <option value="10">Severely delayed (45+ days)</option>
+  </select>
+</div>
+<div class="field">
+  <label for="expense_flex">Expense Flexibility</label>
+  <select id="expense_flex">
+    <option value="">Select...</option>
+    <option value="10">Highly flexible</option>
+    <option value="50">Moderately flexible</option>
+    <option value="90">Fixed — little to none</option>
+  </select>
+</div>
+```
 
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
-        }
-        initParticles();
+  </div>
 
-        function animateNeural() {
-            if (document.hidden) { animFrameId = null; return; }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            const maxDist = 140;
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < maxDist) {
-                        const alpha = (1 - dist / maxDist) * 0.18;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(21, 128, 61, ${alpha})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-            animFrameId = requestAnimationFrame(animateNeural);
-        }
-        animFrameId = requestAnimationFrame(animateNeural);
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && !animFrameId) animFrameId = requestAnimationFrame(animateNeural);
-        });
+  <!-- Live Results Panel -->
 
-        // ========== DOM references ==========
-        const inflowEl = document.getElementById('inflow');
-        const outflowEl = document.getElementById('outflow');
-        const reserveEl = document.getElementById('reserve');
-        const stabilityEl = document.getElementById('stability');
-        const delayEl = document.getElementById('delay');
-        const flexibilityEl = document.getElementById('flexibility');
-        const liveResults = document.getElementById('liveResults');
-        const actionBtn = document.getElementById('actionBtn');
-        const actionOutput = document.getElementById('actionOutput');
-        const toastEl = document.getElementById('toast');
-        const concernEl = document.getElementById('concern');
-        const trackingEl = document.getElementById('tracking');
-        const urgencyEl = document.getElementById('urgency');
-        const whatsappEl = document.getElementById('whatsapp');
+  <div id="results-panel">
+    <div class="card active fade-up">
+      <div class="section-label">Live Analysis</div>
 
-        // ========== Toast ==========
-        let toastTimer;
-        function showToast(message, type = 'info-toast') {
-            clearTimeout(toastTimer);
-            toastEl.textContent = message;
-            toastEl.className = 'toast ' + type + ' show';
-            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
-        }
+```
+  <!-- Risk Badge -->
+  <div id="risk-badge-wrap"></div>
 
-        // ========== Formatting ==========
-        function formatCurrency(value) {
-            const abs = Math.abs(value);
-            const formatted = abs.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-            return (value < 0 ? '-' : '') + formatted;
-        }
-        function formatDecimal(value, decimals = 1) {
-            return value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-        }
+  <!-- Metrics Grid -->
+  <div class="metrics-grid">
+    <div class="metric-box">
+      <div class="metric-box-label">Net Cash Flow</div>
+      <div class="metric-box-value" id="disp-netflow">—</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-box-label">Runway</div>
+      <div class="metric-box-value" id="disp-runway">—</div>
+    </div>
+  </div>
 
-        // ========== Centralised financial computation ==========
-        function computeFinancials() {
-            const inflow = parseFloat(inflowEl.value) || 0;
-            const outflow = parseFloat(outflowEl.value) || 0;
-            const reserve = parseFloat(reserveEl.value) || 0;
-            const stability = stabilityEl.value;
-            const delay = delayEl.value;
-            const flexibility = flexibilityEl.value;
+  <!-- Score Bars -->
+  <div class="score-bars" id="score-bars"></div>
 
-            const net = inflow - outflow;
-            const monthlyBurn = net < 0 ? Math.abs(net) : 0;
+  <!-- Narrative -->
+  <div class="narrative" id="narrative"></div>
 
-            let runwayMonths = null;
-            if (net < 0 && outflow > 0) {
-                runwayMonths = reserve / monthlyBurn; // can be 0 if reserve = 0
-            }
+  <!-- Action Bullets -->
+  <div id="bullets" class="bullets"></div>
 
-            function calcRiskScore() {
-                let score = 0;
-                const netRatio = inflow > 0 ? net / inflow : (outflow > 0 ? -2 : 0);
-                if (netRatio >= 0.3) score += 3;
-                else if (netRatio >= 0.15) score += 8;
-                else if (netRatio >= 0.05) score += 14;
-                else if (netRatio >= 0) score += 20;
-                else if (netRatio >= -0.1) score += 26;
-                else if (netRatio >= -0.25) score += 32;
-                else score += 38;
+  <!-- Callout -->
+  <div id="callout" class="callout"></div>
+</div>
+```
 
-                const safeRunway = (runwayMonths !== null && isFinite(runwayMonths)) ? runwayMonths : Infinity;
-                if (safeRunway >= 24) score += 1;
-                else if (safeRunway >= 12) score += 4;
-                else if (safeRunway >= 6) score += 9;
-                else if (safeRunway >= 3) score += 15;
-                else if (safeRunway >= 1) score += 20;
-                else score += 24;
+  </div>
 
-                switch (stability) {
-                    case 'stable': score += 2; break;
-                    case 'medium': score += 7; break;
-                    case 'low': score += 13; break;
-                    default: score += 6;
-                }
-                switch (delay) {
-                    case 'fast': score += 1; break;
-                    case 'medium': score += 4; break;
-                    case 'slow': score += 8; break;
-                    case 'chaotic': score += 11; break;
-                    default: score += 5;
-                }
-                switch (flexibility) {
-                    case 'high': score += 1; break;
-                    case 'medium': score += 3; break;
-                    case 'low': score += 7; break;
-                    default: score += 3;
-                }
-                return Math.min(100, Math.max(0, Math.round(score)));
-            }
+  <!-- Diagnostic Card -->
 
-            const riskScore = calcRiskScore();
-            const riskLevel = riskScore <= 28 ? 'LOW' : riskScore <= 55 ? 'MEDIUM' : 'HIGH';
-            const riskColor = riskLevel === 'LOW' ? { bar:'low', badge:'low' } :
-                             riskLevel === 'MEDIUM' ? { bar:'medium', badge:'medium' } : { bar:'high', badge:'high' };
+  <div class="card" id="diagnostic-card">
+    <div class="section-label">Business Diagnostic <span style="font-weight:400;letter-spacing:0;font-size:10px;color:var(--text-3);text-transform:none;margin-left:4px">optional</span></div>
 
-            let insight = '', insightClass = 'info';
-            const safeRunway = (runwayMonths !== null && isFinite(runwayMonths)) ? runwayMonths : Infinity;
-            if (riskLevel === 'HIGH') {
-                insightClass = 'danger';
-                insight = '⚠️ <strong>Your business is under financial pressure.</strong> Immediate action required. ';
-                if (net < 0 && safeRunway < 6) {
-                    insight += 'Cash reserves are depleting rapidly. Cut costs, renegotiate terms, and accelerate collections.';
-                } else if (stability === 'low' || delay === 'chaotic') {
-                    insight += 'Unpredictable revenue/payment patterns create systemic risk. Tighten payment policies and diversify income.';
-                } else {
-                    insight += 'Multiple risk factors detected. Create a 90‑day emergency plan and seek professional advice.';
-                }
-            } else if (riskLevel === 'MEDIUM') {
-                insightClass = 'warning';
-                insight = '⚡ <strong>Your business is stable but exposed.</strong> ';
-                if (outflow > 0 && net >= 0 && net < outflow * 0.15) {
-                    insight += 'Margins are thin. Build a larger cash buffer and improve operational efficiency.';
-                } else if (delay === 'slow') {
-                    insight += 'Slow payments create strain. Consider early‑payment discounts or invoice factoring.';
-                } else {
-                    insight += 'Moderate risks exist. Regular monitoring and proactive planning are recommended.';
-                }
-            } else {
-                insightClass = 'success';
-                insight = '✅ <strong>Your business appears healthy.</strong> ';
-                if (outflow > 0 && net >= outflow * 0.3) {
-                    insight += 'Strong cash flow & reserves give you flexibility for growth or investment.';
-                } else {
-                    insight += 'Keep monitoring key metrics and maintain your financial discipline.';
-                }
-            }
+```
+<div class="field">
+  <label for="concern">Main Financial Concern</label>
+  <select id="concern">
+    <option value="">Select...</option>
+    <option value="cash_flow">Cash flow</option>
+    <option value="late_payments">Late payments</option>
+    <option value="overhead">Overhead costs</option>
+    <option value="growth_funding">Growth funding</option>
+    <option value="inventory">Inventory</option>
+    <option value="other">Other</option>
+  </select>
+</div>
+<div class="field">
+  <label for="tracking">Financial Tracking Level</label>
+  <select id="tracking">
+    <option value="">Select...</option>
+    <option value="digital">I track everything digitally</option>
+    <option value="basic">I do basic bookkeeping</option>
+    <option value="rarely">I rarely track</option>
+  </select>
+</div>
+<div class="field">
+  <label for="urgency">Urgency Level</label>
+  <select id="urgency">
+    <option value="">Select...</option>
+    <option value="low">Low — just exploring</option>
+    <option value="medium">Medium — worried but not critical</option>
+    <option value="high">High — need help immediately</option>
+  </select>
+</div>
+<div class="field">
+  <label for="whatsapp">WhatsApp Number (optional)</label>
+  <input type="tel" id="whatsapp" placeholder="+971501234567">
+</div>
+```
 
-            let runwayStr = 'N/A';
-            if (runwayMonths !== null && isFinite(runwayMonths)) {
-                runwayStr = (runwayMonths < 1 ? formatDecimal(runwayMonths * 30, 0) + ' days' :
-                             runwayMonths >= 24 ? '24+ months' : formatDecimal(runwayMonths, 1) + ' months');
-            } else if (net >= 0 && reserve > 0) {
-                runwayStr = 'Indefinite (positive cash flow)';
-            }
+  </div>
 
-            const burnRateStr = net < 0 ? formatCurrency(monthlyBurn) + '/mo' : 'None';
-            const adequacyRatio = outflow > 0 ? (reserve / outflow).toFixed(1) : 'N/A';
-            const adequacyStr = outflow > 0 ? adequacyRatio + '× monthly outflow' : 'N/A';
-            const netPrefix = net >= 0 ? '+' : '';
-            const netClass = net >= 0 ? 'positive' : 'negative';
+  <!-- Submit -->
 
-            return {
-                inflow, outflow, reserve, stability, delay, flexibility,
-                net, netPrefix, netClass, monthlyBurn, burnRateStr,
-                runwayMonths, runwayStr, adequacyStr,
-                riskScore, riskLevel, riskColor, insight, insightClass
-            };
-        }
+  <div id="submit-wrap" style="margin-bottom:14px">
+    <button class="btn btn-gold" id="btn-submit" disabled>
+      <span class="spinner" id="spinner"></span>
+      <span id="btn-label">Analyze My Business</span>
+    </button>
+  </div>
 
-        // ========== Render live dashboard ==========
-        function renderDashboard(fin) {
-            const runwayValClass = (fin.runwayMonths !== null && fin.runwayMonths < 3) ? 'negative' :
-                                   (fin.runwayMonths !== null && fin.runwayMonths < 6) ? 'neutral' : 'positive';
-            return `
-                <div style="font-weight:700;font-size:0.88rem;letter-spacing:0.02em;margin-bottom:8px;color:#0f172a;">📋 Financial Snapshot</div>
-                <div class="result-row">
-                    <span class="result-label">💰 Net Cash Flow</span>
-                    <span class="result-value ${fin.netClass}">${fin.netPrefix}${formatCurrency(fin.net)}</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label">🔥 Monthly Burn Rate</span>
-                    <span class="result-value ${fin.net < 0 ? 'negative' : 'positive'}">${fin.burnRateStr}</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label">⏳ Runway</span>
-                    <span class="result-value ${runwayValClass}">${fin.runwayStr}</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label">🏦 Reserve Adequacy</span>
-                    <span class="result-value neutral">${fin.adequacyStr}</span>
-                </div>
-                <div class="result-row" style="border-bottom:none;">
-                    <span class="result-label">🎯 Risk Score</span>
-                    <span class="result-value ${fin.riskLevel === 'HIGH' ? 'negative' : fin.riskLevel === 'MEDIUM' ? 'neutral' : 'positive'}">${fin.riskScore}/100</span>
-                </div>
-                <div class="risk-meter-container">
-                    <div class="risk-meter-bar ${fin.riskColor.bar}" style="width:${Math.max(8, fin.riskScore)}%;"></div>
-                </div>
-                <span class="risk-score-badge ${fin.riskColor.badge}">🚨 Risk Level: ${fin.riskLevel}</span>
-                <div class="insight-box ${fin.insightClass}">🧠 ${fin.insight}</div>
-            `;
-        }
+  <!-- Success Card -->
 
-        // ========== Debounced dashboard update ==========
-        let debounceTimer;
-        function debouncedCalculate() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(calculate, 400);
-        }
-        function calculate() {
-            const fin = computeFinancials();
-            liveResults.classList.add('updating');
-            liveResults.innerHTML = renderDashboard(fin);
-            setTimeout(() => liveResults.classList.remove('updating'), 350);
-        }
+  <div class="card" id="success-card">
+    <div class="success-header">
+      <div class="success-check">✓</div>
+      <div class="success-title">Analysis Complete</div>
+      <div class="success-sub" id="success-sub">Your financial data has been received.</div>
+    </div>
+    <div id="next-steps"></div>
+    <div class="upsell-bar">
+      <p><strong>CortexFlow Pro</strong> — Automated monthly risk monitoring, KRI alerts &amp; benchmarking.</p>
+      <div class="lead-row">
+        <input type="email" id="upsell-email" placeholder="Your email for early access">
+        <button onclick="handleUpsell()" style="background:var(--gold);color:#0b0f1a;border-radius:6px">Notify Me</button>
+      </div>
+    </div>
+  </div>
 
-        const allInputs = [inflowEl, outflowEl, reserveEl, stabilityEl, delayEl, flexibilityEl];
-        allInputs.forEach(el => {
-            el.addEventListener('input', debouncedCalculate);
-            el.addEventListener('change', debouncedCalculate);
-        });
+  <!-- Error Card -->
 
-        // ========== Generate Action Plan ==========
-        function generateActionPlan() {
-            const fin = computeFinancials();
-            const concern = concernEl.value;
-            const tracking = trackingEl.value;
-            const urgency = urgencyEl.value;
-            const whatsapp = whatsappEl.value.trim();
+  <div class="card" id="error-card">
+    <div class="error-icon">⚡</div>
+    <div class="error-text" id="error-msg">Submission failed. Please try again.</div>
+    <button class="btn btn-gold" id="btn-retry">Retry Submission</button>
+    <button class="btn btn-ghost" id="btn-back">Edit &amp; Try Later</button>
+  </div>
 
-            const anyFinancialData = (fin.inflow !== 0 || fin.outflow !== 0 || fin.reserve !== 0 ||
-                                      fin.stability !== '' || fin.delay !== '' || fin.flexibility !== '');
-            if (!anyFinancialData) {
-                showToast('⚠️ Please enter some financial data first.', 'info-toast');
-                return;
-            }
+  <div class="footer">
+    CortexFlow v2.0 &nbsp;·&nbsp; Built for SME financial intelligence
+  </div>
+</div>
 
-            let recommendation = '';
-            if (fin.riskLevel === 'HIGH') {
-                recommendation = 'URGENT: Your financial risk is elevated. ';
-                if (concern === 'Cash flow issues' || concern === 'Financial instability') {
-                    recommendation += `Based on your ${concern.toLowerCase()}, we recommend immediate cash conservation and a full audit.`;
-                } else if (concern) {
-                    recommendation += `Your concern about ${concern.toLowerCase()} combined with high risk signals requires prompt professional intervention.`;
-                } else {
-                    recommendation += 'Multiple high‑risk indicators detected. A comprehensive financial restructuring may be needed.';
-                }
-            } else if (fin.riskLevel === 'MEDIUM') {
-                recommendation = 'ATTENTION: Moderate risk detected. ';
-                if (tracking === 'No tracking' || tracking === 'Basic tracking') {
-                    recommendation += 'Upgrading tracking to advanced levels will improve risk management.';
-                } else {
-                    recommendation += 'Continue monitoring and build additional cash reserves.';
-                }
-            } else {
-                recommendation = 'STRONG POSITION: Your financial health is solid. ';
-                recommendation += 'Focus on growth opportunities while maintaining your current discipline.';
-            }
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CORTEXFLOW — FINANCIAL DECISION INTELLIGENCE SYSTEM v2.0
+   Architecture:
+     · Calculation Engine  — pure functions, zero DOM
+     · Insight Engine      — pure functions, zero DOM
+     · Data Layer          — payload, storage, API, retry
+     · UI Layer            — DOM, state machine, rendering
+   ═══════════════════════════════════════════════════════════════ */
 
-            if (urgency === 'Critical') {
-                recommendation += ' Given the critical urgency, we advise immediate action.';
-            }
+const API_ENDPOINT  = 'YOUR_APPS_SCRIPT_ENDPOINT_HERE';
+const SECRET_SALT   = 'cfx-v2-salt-2024-replace-in-production';
 
-            const safeRec = escapeHTML(recommendation);
-            const safeWhatsapp = whatsapp ? escapeHTML(whatsapp) : '';
-            const recClass = fin.riskLevel === 'HIGH' ? 'danger' : fin.riskLevel === 'MEDIUM' ? 'warning' : 'success';
-            const whatsappHTML = safeWhatsapp
-                ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(22,163,74,0.06);border-radius:10px;font-size:0.78rem;color:#166534;text-align:center;">
-                      📱 Your action plan will be sent to <strong>${safeWhatsapp}</strong> via WhatsApp
-                   </div>`
-                : '';
+/* ─── UTILITIES ──────────────────────────────────────────────── */
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
 
-            actionOutput.innerHTML = `
-                <div class="insight-box ${recClass}">
-                    📝 <strong>Recommendation:</strong> ${safeRec}
-                </div>
-                ${whatsappHTML}
-            `;
+// Lightweight deterministic token (not cryptographic — obfuscation only)
+function makeToken(salt, sessionId, submissionId) {
+  const raw = salt + '|' + sessionId + '|' + submissionId;
+  let h = 5381;
+  for (let i = 0; i < raw.length; i++) h = ((h << 5) + h) ^ raw.charCodeAt(i);
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
 
-            showToast('✅ Your personalised action plan is ready.', 'success');
-        }
+function sanitizeStr(v) {
+  if (typeof v !== 'string') return v;
+  return v.replace(/<[^>]*>/g, '').trim().slice(0, 512);
+}
 
-        actionBtn.addEventListener('click', generateActionPlan);
+function safeStore(type) {
+  try {
+    window[type].setItem('__cf_t', '1');
+    window[type].removeItem('__cf_t');
+    return window[type];
+  } catch { return null; }
+}
 
-        // Initial load
-        calculate();
-    </script>
+const LS = safeStore('localStorage');
+const SS = safeStore('sessionStorage');
+
+/* ─── ANALYTICS ──────────────────────────────────────────────── */
+const Analytics = (() => {
+  const log = [];
+  function emit(name, data = {}) {
+    const ev = { name, ts: Date.now(), state: App.state, ...data };
+    log.push(ev);
+    console.debug('[CortexFlow]', name, ev);
+    // Stub: POST to analytics endpoint when configured
+    // fetch('/analytics', { method: 'POST', body: JSON.stringify(ev), headers: {'Content-Type':'application/json'} }).catch(() => {});
+  }
+  return { emit, get log() { return log; } };
+})();
+
+/* ─── IDENTITY ───────────────────────────────────────────────── */
+const Identity = (() => {
+  let _sid;
+  function init() {
+    _sid = (SS && SS.getItem('cf_sid')) || null;
+    if (!_sid) { _sid = uuidv4(); if (SS) SS.setItem('cf_sid', _sid); }
+  }
+  return { init, get sid() { return _sid; }, freshSubId() { return uuidv4(); } };
+})();
+
+/* ─── APP STATE ──────────────────────────────────────────────── */
+const App = {
+  state: 'idle',       // idle | input | results | submitting | success | error | recovering
+  sessionId: null,
+  submissionId: null,
+  scores: null,
+  riskLevel: null,
+  firstInput: false,
+  allValid: false,
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   CALCULATION ENGINE
+   Pure functions — deterministic, no side effects, no DOM access
+   ═══════════════════════════════════════════════════════════════ */
+const CalcEngine = {
+  netFlow(inflow, outflow) {
+    return inflow - outflow;
+  },
+
+  runway(netFlow, reserve) {
+    if (netFlow >= 0)
+      return { label: 'Positive — no runway concern', value: Infinity, cls: 'val-positive' };
+    if (reserve <= 0)
+      return { label: '0 months — immediate risk', value: 0, cls: 'val-negative' };
+    const m = reserve / Math.abs(netFlow);
+    const cls = m < 1 ? 'val-negative' : m < 3 ? 'val-warning' : 'val-neutral';
+    return { label: m.toFixed(1) + ' months', value: m, cls };
+  },
+
+  liquidityStress(netFlow, reserve, payDelay) {
+    if (netFlow >= 0) return 0;
+    let base = reserve > 0 ? Math.min(100, (Math.abs(netFlow) / reserve) * 100) : 100;
+    if (payDelay < 50) base = Math.min(100, base + 15);
+    return Math.round(base);
+  },
+
+  revenueReliability(stability, payDelay) {
+    return Math.round(0.6 * stability + 0.4 * payDelay);
+  },
+
+  costRigidity(flex) {
+    return flex; // direct mapping: 10, 50, or 90
+  },
+
+  riskLevel(netFlow, stress, reliability) {
+    if (netFlow < 0 && (stress >= 70 || reliability <= 40)) return 'HIGH';
+    if ((netFlow >= 0 && reliability <= 60) || (netFlow < 0 && stress < 70 && reliability > 40)) return 'MEDIUM';
+    return 'LOW';
+  },
+
+  run(inp) {
+    const nf   = this.netFlow(inp.inflow, inp.outflow);
+    const rw   = this.runway(nf, inp.reserve);
+    const ss   = this.liquidityStress(nf, inp.reserve, inp.payDelay);
+    const rr   = this.revenueReliability(inp.stability, inp.payDelay);
+    const cr   = this.costRigidity(inp.flex);
+    const rl   = this.riskLevel(nf, ss, rr);
+    return { netFlow: nf, runway: rw, stress: ss, reliability: rr, rigidity: cr, level: rl };
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   INSIGHT ENGINE
+   Pure functions — no DOM access, no side effects
+   ═══════════════════════════════════════════════════════════════ */
+const InsightEngine = {
+  narrative(s) {
+    const { stress, reliability, rigidity, level } = s;
+    return {
+      HIGH:   `Your business shows an overall HIGH financial risk. Net cash flow is negative, and your liquidity stress score is ${stress}/100. Immediate cost reduction and tighter receivables are critical.`,
+      MEDIUM: `Your financial position is mixed — you have manageable stress but some warning signs. Revenue reliability is ${reliability}/100 and cost rigidity is ${rigidity}/100. Take proactive steps to improve stability.`,
+      LOW:    `Your financials look healthy. Net cash flow is positive, and your risk indicators are low. This is a good time to plan for growth.`,
+    }[level];
+  },
+
+  bullets(s) {
+    const list = [];
+    if (s.level === 'LOW')  list.push('Your position is stable — consider growth investments.');
+    if (s.rigidity > 80)    list.push('Reduce fixed costs or renegotiate supplier contracts.');
+    if (s.payDelay < 50)    list.push('Improve collections: tighten payment terms, consider invoice factoring.');
+    if (s.stress > 70)      list.push('Build emergency cash buffer; cut non-essential outflows immediately.');
+    if (s.reliability < 50) list.push('Diversify revenue streams or secure retainer clients.');
+    return list;
+  },
+
+  callout(level) {
+    if (level === 'HIGH')   return { msg: 'We recommend you speak with a financial advisor immediately.', cls: 'level-high',   icon: '🔴' };
+    if (level === 'MEDIUM') return { msg: 'Consider a financial health review to address these warning signs.', cls: 'level-medium', icon: '🟡' };
+    return null;
+  },
+
+  buttonLabel(level) {
+    return { HIGH: 'Get Emergency Guidance', MEDIUM: 'Analyze My Business', LOW: 'Explore Growth Options' }[level] || 'Analyze My Business';
+  },
+
+  buttonClass(level) {
+    return { HIGH: 'btn-risk-high', MEDIUM: 'btn-risk-medium', LOW: 'btn-risk-low' }[level] || 'btn-gold';
+  },
+
+  nextSteps(level) {
+    if (level === 'HIGH') return `
+      <div class="next-step-block ns-high">
+        <div class="next-step-title">⚠ Your business may be at risk.</div>
+        <div class="next-step-body">Speak to a certified financial advisor before your cash position worsens. Early action significantly improves outcomes.</div>
+        <button class="cta-link red" onclick="return false">Schedule a Free Call ↗</button>
+      </div>`;
+    if (level === 'MEDIUM') return `
+      <div class="next-step-block ns-medium">
+        <div class="next-step-title">⚡ You're on the edge.</div>
+        <div class="next-step-body">Get a free financial health guide and practical steps to strengthen your position.</div>
+        <div class="lead-row">
+          <input type="email" placeholder="Email for free guide" style="background:var(--surface-3);border-color:var(--amber-border)">
+          <button class="cta-link amber" onclick="return false">Send Guide</button>
+        </div>
+      </div>`;
+    return `
+      <div class="next-step-block ns-low">
+        <div class="next-step-title">✦ Great financial position!</div>
+        <div class="next-step-body">You're in a strong spot. Learn how to optimize for sustainable growth — join our upcoming masterclass.</div>
+        <button class="cta-link green" onclick="return false">Notify Me About Masterclass</button>
+      </div>`;
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   DATA LAYER
+   Payload building, localStorage, API calls, retry logic
+   ═══════════════════════════════════════════════════════════════ */
+const DataLayer = {
+  buildPayload(inp, scores, subId, sessId) {
+    return {
+      submission_id:     subId,
+      client_session_id: sessId,
+      integrity_token:   makeToken(SECRET_SALT, sessId, subId),
+      ts:                new Date().toISOString(),
+      inputs: {
+        inflow:           inp.inflow,
+        outflow:          inp.outflow,
+        reserve:          inp.reserve,
+        stability_value:  inp.stability,
+        payment_delay_value: inp.payDelay,
+        expense_flex_value:  inp.flex,
+        concern:          sanitizeStr(inp.concern || ''),
+        tracking:         sanitizeStr(inp.tracking || ''),
+        urgency:          sanitizeStr(inp.urgency || ''),
+        whatsapp:         sanitizeStr(inp.whatsapp || ''),
+      },
+      scores: {
+        net_flow:     scores.netFlow,
+        stress:       scores.stress,
+        reliability:  scores.reliability,
+        rigidity:     scores.rigidity,
+        risk_level:   scores.level,
+        runway_label: scores.runway.label,
+      },
+      funnel_events: Analytics.log,
+    };
+  },
+
+  savePending(p) { if (LS) LS.setItem('cortexflow_pending_submission', JSON.stringify(p)); },
+  clearPending()  { if (LS) LS.removeItem('cortexflow_pending_submission'); },
+  getPending() {
+    if (!LS) return null;
+    try { return JSON.parse(LS.getItem('cortexflow_pending_submission')); } catch { return null; }
+  },
+
+  async post(payload) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10000);
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      if (res.status === 429) { const e = new Error('rate_limited'); e.code = 429; throw e; }
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({}));
+        throw new Error(b.message || 'server_error');
+      }
+      return res.json();
+    } catch(e) { clearTimeout(timer); throw e; }
+  },
+
+  async submitWithRetry(payload) {
+    try { return await this.post(payload); }
+    catch (e) {
+      if (e.code === 429) throw e;
+      await new Promise(r => setTimeout(r, 2000));
+      return await this.post(payload);
+    }
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   UI LAYER
+   DOM manipulation, state machine, rendering
+   ═══════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+// DOM cache
+const D = {
+  formCard:       $('form-card'),
+  diagCard:       $('diagnostic-card'),
+  submitWrap:     $('submit-wrap'),
+  resultsPanel:   $('results-panel'),
+  riskBadgeWrap:  $('risk-badge-wrap'),
+  dispNetflow:    $('disp-netflow'),
+  dispRunway:     $('disp-runway'),
+  scoreBars:      $('score-bars'),
+  narrative:      $('narrative'),
+  bullets:        $('bullets'),
+  callout:        $('callout'),
+  btnSubmit:      $('btn-submit'),
+  btnLabel:       $('btn-label'),
+  spinner:        $('spinner'),
+  successCard:    $('success-card'),
+  successSub:     $('success-sub'),
+  nextSteps:      $('next-steps'),
+  errorCard:      $('error-card'),
+  errorMsg:       $('error-msg'),
+  btnRetry:       $('btn-retry'),
+  btnBack:        $('btn-back'),
+  recovBanner:    $('recovery-banner'),
+  btnResend:      $('btn-resend'),
+  btnDiscard:     $('btn-discard'),
+};
+
+// State machine transition
+function go(newState, meta = {}) {
+  App.state = newState;
+  draw(meta);
+}
+
+// Master render function — called on every transition
+function draw(meta = {}) {
+  const s = App.state;
+  const isSuccess = s === 'success';
+  const isError   = s === 'error';
+
+  // Show/hide main sections
+  D.formCard.style.display    = isSuccess ? 'none' : 'block';
+  D.diagCard.style.display    = isSuccess ? 'none' : 'block';
+  D.submitWrap.style.display  = isSuccess ? 'none' : 'block';
+  D.successCard.classList.toggle('visible', isSuccess);
+  D.errorCard.classList.toggle('visible', isError);
+
+  // Disable all inputs during submission
+  const lock = s === 'submitting';
+  document.querySelectorAll('input:not(#__hp), select').forEach(el => el.disabled = lock);
+
+  // Button
+  if (s === 'submitting') {
+    D.spinner.classList.add('on');
+    D.btnLabel.textContent = 'Analyzing…';
+    D.btnSubmit.disabled = true;
+    D.btnSubmit.className = 'btn ' + (App.riskLevel ? InsightEngine.buttonClass(App.riskLevel) : 'btn-gold');
+  } else {
+    D.spinner.classList.remove('on');
+    const canSubmit = App.allValid && ['input', 'results', 'error'].includes(s);
+    D.btnSubmit.disabled = !canSubmit;
+    if (App.riskLevel) {
+      D.btnLabel.textContent = InsightEngine.buttonLabel(App.riskLevel);
+      D.btnSubmit.className  = 'btn ' + InsightEngine.buttonClass(App.riskLevel);
+    } else {
+      D.btnLabel.textContent = 'Analyze My Business';
+      D.btnSubmit.className  = 'btn btn-gold';
+    }
+  }
+
+  // Error messaging
+  if (isError) {
+    if (meta.code === 429) {
+      D.errorMsg.textContent = 'Too many attempts. Please wait a minute before resubmitting.';
+      D.btnRetry.disabled = true;
+      setTimeout(() => { D.btnRetry.disabled = false; }, 60000);
+    } else {
+      D.errorMsg.textContent = meta.msg || 'Submission failed. Your data is saved locally — tap Retry when ready.';
+      D.btnRetry.disabled = false;
+    }
+  }
+
+  // Success content
+  if (isSuccess && App.riskLevel) {
+    const lvl = App.riskLevel;
+    D.successSub.textContent = `Your ${lvl} risk profile has been received and logged.`;
+    D.nextSteps.innerHTML = InsightEngine.nextSteps(lvl);
+  }
+}
+
+/* ── LIVE RESULT RENDERING ─────────────────── */
+function renderLiveResults(scores, inp) {
+  const { netFlow, runway, stress, reliability, rigidity, level } = scores;
+
+  // Risk badge
+  const badgeMap = { LOW:'risk-low', MEDIUM:'risk-medium', HIGH:'risk-high' };
+  const badgeSub = { LOW:'All indicators within healthy range', MEDIUM:'Some warning signals detected', HIGH:'Immediate attention required' };
+  D.riskBadgeWrap.innerHTML = `
+    <div class="risk-badge ${badgeMap[level]} fade-up">
+      <div class="risk-pulse"></div>
+      <div class="risk-badge-text">
+        <div class="risk-level-label">${level} RISK</div>
+        <div class="risk-badge-sub">${badgeSub[level]}</div>
+      </div>
+    </div>`;
+
+  // Metrics
+  const fmtMoney = n => (n >= 0 ? '+' : '') + '$' + Math.abs(n).toLocaleString();
+  D.dispNetflow.textContent = fmtMoney(netFlow);
+  D.dispNetflow.className   = 'metric-box-value ' + (netFlow > 0 ? 'val-positive' : netFlow < 0 ? 'val-negative' : 'val-neutral');
+  D.dispRunway.textContent  = runway.label;
+  D.dispRunway.className    = 'metric-box-value ' + runway.cls;
+
+  // Score bars
+  D.scoreBars.innerHTML = `
+    <div class="score-bar-item">
+      <div class="score-bar-meta"><span>LIQUIDITY STRESS</span><span>${stress}/100</span></div>
+      <div class="score-bar-track"><div class="score-bar-fill bar-stress" style="width:${stress}%"></div></div>
+    </div>
+    <div class="score-bar-item">
+      <div class="score-bar-meta"><span>REVENUE RELIABILITY</span><span>${reliability}/100</span></div>
+      <div class="score-bar-track"><div class="score-bar-fill bar-reliability" style="width:${reliability}%"></div></div>
+    </div>
+    <div class="score-bar-item">
+      <div class="score-bar-meta"><span>COST RIGIDITY</span><span>${rigidity}/100</span></div>
+      <div class="score-bar-track"><div class="score-bar-fill bar-rigidity" style="width:${rigidity}%"></div></div>
+    </div>`;
+
+  // Narrative
+  D.narrative.textContent = InsightEngine.narrative({ stress, reliability, rigidity, level });
+
+  // Bullets
+  const blist = InsightEngine.bullets({ level, rigidity, payDelay: inp.payDelay, stress, reliability });
+  D.bullets.innerHTML = blist.map(b =>
+    `<div class="bullet-item"><span class="bullet-dot">◆</span><span>${b}</span></div>`
+  ).join('');
+
+  // Callout
+  const co = InsightEngine.callout(level);
+  if (co) {
+    D.callout.className = `callout visible ${co.cls}`;
+    D.callout.innerHTML = `<span class="callout-icon">${co.icon}</span><span>${co.msg}</span>`;
+  } else {
+    D.callout.className = 'callout';
+    D.callout.innerHTML = '';
+  }
+
+  D.resultsPanel.classList.add('visible');
+}
+
+/* ── INPUT HELPERS ─────────────────────────── */
+function collectInputs() {
+  return {
+    inflow:    parseFloat($('inflow').value)         || 0,
+    outflow:   parseFloat($('outflow').value)        || 0,
+    reserve:   parseFloat($('reserve').value)        || 0,
+    stability: parseFloat($('stability').value),
+    payDelay:  parseFloat($('payment_delay').value),
+    flex:      parseFloat($('expense_flex').value),
+    concern:   $('concern').value,
+    tracking:  $('tracking').value,
+    urgency:   $('urgency').value,
+    whatsapp:  $('whatsapp').value,
+  };
+}
+
+function isEngineValid(inp) {
+  return (
+    $('stability').value    !== '' &&
+    $('payment_delay').value !== '' &&
+    $('expense_flex').value  !== '' &&
+    !isNaN(inp.stability) && !isNaN(inp.payDelay) && !isNaN(inp.flex)
+  );
+}
+
+/* ── EVENT HANDLERS ────────────────────────── */
+function onAnyInput() {
+  const inp   = collectInputs();
+  const valid = isEngineValid(inp);
+  App.allValid = valid;
+
+  if (!App.firstInput) {
+    App.firstInput = true;
+    Analytics.emit('first_input');
+    go('input');
+  }
+
+  if (valid) {
+    const scores    = CalcEngine.run(inp);
+    App.scores      = scores;
+    App.riskLevel   = scores.level;
+    renderLiveResults(scores, inp);
+    Analytics.emit('risk_level_calculated', { level: scores.level });
+    Analytics.emit('insight_viewed');
+    go('results');
+  } else {
+    D.resultsPanel.classList.remove('visible');
+    App.riskLevel = null;
+    if (App.state !== 'idle') go('input');
+  }
+}
+
+async function onSubmit() {
+  // Honeypot check
+  if ($('__hp').value) { Analytics.emit('honeypot_blocked'); go('success'); return; }
+
+  const inp = collectInputs();
+  if (!isEngineValid(inp) || !App.scores) return;
+
+  // Validate WhatsApp if provided
+  const wa = inp.whatsapp.trim();
+  if (wa && !/^\+?\d{7,15}$/.test(wa)) {
+    alert('Enter a valid WhatsApp number, e.g. +971501234567');
+    return;
+  }
+
+  Analytics.emit('submit_clicked');
+  App.submissionId    = Identity.freshSubId();
+  const payload       = DataLayer.buildPayload(inp, App.scores, App.submissionId, App.sessionId);
+  DataLayer.savePending(payload);
+  go('submitting');
+
+  // Deliberate UX delay + actual call
+  await new Promise(r => setTimeout(r, 1800));
+
+  try {
+    await DataLayer.submitWithRetry(payload);
+    DataLayer.clearPending();
+    Analytics.emit('submission_success', { id: App.submissionId });
+    go('success');
+  } catch (e) {
+    Analytics.emit('submission_failed', { err: e.message });
+    go('error', { msg: e.message, code: e.code });
+  }
+}
+
+async function onRetry() {
+  const pend = DataLayer.getPending();
+  if (!pend) { go('results'); return; }
+  Analytics.emit('resend_initiated');
+  go('submitting');
+  await new Promise(r => setTimeout(r, 1800));
+  try {
+    await DataLayer.submitWithRetry(pend);
+    DataLayer.clearPending();
+    Analytics.emit('submission_success', { id: pend.submission_id });
+    go('success');
+  } catch (e) {
+    go('error', { msg: e.message, code: e.code });
+  }
+}
+
+function handleUpsell() {
+  const el = $('upsell-email');
+  if (!el.value.trim()) return;
+  Analytics.emit('upsell_signup', { email: el.value });
+  el.disabled = true;
+  el.placeholder = "You're on the list — we'll be in touch!";
+  el.value = '';
+}
+
+/* ── DROP-OFF TRACKING ─────────────────────── */
+window.addEventListener('beforeunload', () => {
+  if (!['idle','success'].includes(App.state)) {
+    const n = [...document.querySelectorAll('input:not(#__hp),select')].filter(el => el.value).length;
+    Analytics.emit('funnel_dropoff', { state: App.state, filled: n });
+  }
+});
+
+/* ── RECOVERY FLOW ─────────────────────────── */
+function checkRecovery() {
+  const pend = DataLayer.getPending();
+  if (!pend) return;
+  Analytics.emit('pending_found_on_load', { id: pend.submission_id });
+  D.recovBanner.classList.add('visible');
+
+  D.btnResend.addEventListener('click', async () => {
+    D.recovBanner.classList.remove('visible');
+    if (pend.scores?.risk_level) App.riskLevel = pend.scores.risk_level;
+    App.scores = pend.scores ? { ...pend.scores, level: pend.scores.risk_level } : App.scores;
+    Analytics.emit('resend_initiated');
+    go('submitting');
+    await new Promise(r => setTimeout(r, 1800));
+    try {
+      await DataLayer.submitWithRetry(pend);
+      DataLayer.clearPending();
+      go('success');
+    } catch (e) {
+      go('error', { msg: e.message, code: e.code });
+    }
+  }, { once: true });
+
+  D.btnDiscard.addEventListener('click', () => {
+    DataLayer.clearPending();
+    D.recovBanner.classList.remove('visible');
+    go('idle');
+  }, { once: true });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOOT
+   ═══════════════════════════════════════════════════════════════ */
+(function boot() {
+  Identity.init();
+  App.sessionId = Identity.sid;
+  Analytics.emit('page_loaded');
+
+  // Engine input listeners
+  ['inflow','outflow','reserve','stability','payment_delay','expense_flex'].forEach(id => {
+    $(id).addEventListener('input',  onAnyInput);
+    $(id).addEventListener('change', onAnyInput);
+  });
+
+  // Diagnostic analytics
+  ['concern','tracking','urgency','whatsapp'].forEach(id =>
+    $(id).addEventListener('change', () => Analytics.emit('diagnostic_section_interaction', { field: id }))
+  );
+
+  D.btnSubmit.addEventListener('click', onSubmit);
+  D.btnRetry.addEventListener('click', onRetry);
+  D.btnBack.addEventListener('click', () => {
+    go('results');
+    $('inflow').focus();
+  });
+
+  checkRecovery();
+  go('idle');
+})();
+</script>
+
 </body>
 </html>
