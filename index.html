@@ -4,79 +4,129 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>CortexFlow · Free SME Financial Health Check</title>
-  <!-- Premium font from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ---------- CSS VARIABLES ---------- */
+    :root {
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --color-bg: #f5f7fa;
+      --color-card: rgba(255,255,255,0.85);
+      --color-text: #1e293b;
+      --color-text-secondary: #475569;
+      --color-border: #e2e8f0;
+      --color-accent: #2563eb;
+      --color-accent-hover: #1d4ed8;
+      --color-success: #22c55e;
+      --shadow-sm: 0 4px 6px rgba(0,0,0,0.03);
+      --shadow-md: 0 20px 40px rgba(0,0,0,0.08);
+      --radius: 24px;
+      --transition: 0.2s ease;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-main);
       background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 16px;
-      color: #1e293b;
+      padding: clamp(12px, 4vw, 40px);
+      color: var(--color-text);
     }
+
+    /* ---------- MAIN CONTAINER ---------- */
     .container {
-      max-width: 520px;
       width: 100%;
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(20px);
-      border-radius: 32px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-      padding: 24px;
-      transition: all 0.3s ease;
+      max-width: 680px;                 /* narrow enough for focus, wide enough for desktop */
+      background: var(--color-card);
+      backdrop-filter: blur(24px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: clamp(24px, 6vw, 48px); /* fluid padding */
+      transition: all var(--transition);
+      border: 1px solid rgba(0,0,0,0.04);
     }
+
+    /* ---------- HEADER ---------- */
     header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: clamp(20px, 5vw, 32px);
     }
     .logo {
-      font-size: 2.2em;
+      font-size: clamp(2rem, 8vw, 2.8rem);
       font-weight: 700;
       background: linear-gradient(135deg, #2563eb, #7c3aed);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 4px;
+      line-height: 1.2;
     }
     .subtitle {
-      font-size: 1.1em;
+      font-size: clamp(1rem, 4vw, 1.3rem);
       font-weight: 500;
-      color: #475569;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
     }
     .byline {
-      font-size: 0.9em;
+      font-size: clamp(0.85rem, 3vw, 1rem);
       color: #64748b;
       margin-top: 8px;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
     }
+
+    /* ---------- CARD BASE ---------- */
     .card {
       background: white;
-      border-radius: 24px;
-      padding: 24px;
+      border-radius: var(--radius);
+      padding: clamp(16px, 4vw, 32px);
       margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.03);
+      transition: transform var(--transition), box-shadow var(--transition);
     }
     .card:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 24px rgba(0,0,0,0.05);
     }
+
+    /* ---------- FORM LAYOUT ---------- */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4px 16px;
+    }
+    /* Two columns on tablets and up */
+    @media (min-width: 600px) {
+      .input-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      /* Make the button span full width */
+      .input-grid .full-width {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .field-group {
+      margin-bottom: 4px;
+    }
+
     label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.95em;
-      margin: 16px 0 6px;
-      color: #334155;
       display: flex;
       align-items: center;
       gap: 6px;
+      font-weight: 600;
+      font-size: clamp(0.9rem, 3.5vw, 1rem);
+      color: #334155;
+      margin-bottom: 6px;
     }
-    label .info-icon {
+
+    .info-icon {
       display: inline-flex;
       justify-content: center;
       align-items: center;
@@ -85,7 +135,7 @@
       background: #e2e8f0;
       color: #64748b;
       border-radius: 50%;
-      font-size: 0.7em;
+      font-size: 0.7rem;
       font-weight: 700;
       cursor: help;
       position: relative;
@@ -98,9 +148,9 @@
       transform: translateX(-50%);
       background: #1e293b;
       color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.75em;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
       white-space: nowrap;
       opacity: 0;
       pointer-events: none;
@@ -110,19 +160,20 @@
     .info-icon:hover::after {
       opacity: 1;
     }
+
     input {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 16px;
-      font-size: 1em;
+      padding: clamp(12px, 2.5vw, 14px) 16px;
+      border: 2px solid var(--color-border);
+      border-radius: 14px;
+      font-size: 1rem;
       font-family: inherit;
-      transition: all 0.2s;
+      transition: all var(--transition);
       background: #f8fafc;
       outline: none;
     }
     input:focus {
-      border-color: #2563eb;
+      border-color: var(--color-accent);
       background: white;
       box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
     }
@@ -131,28 +182,29 @@
       background: #fef2f2;
     }
     input.valid {
-      border-color: #22c55e;
+      border-color: var(--color-success);
       background: #f0fdf4;
     }
     .validation-feedback {
-      font-size: 0.8em;
-      margin-top: 4px;
+      font-size: 0.8rem;
       color: #ef4444;
       min-height: 18px;
+      margin-top: 4px;
     }
+
     button {
       background: linear-gradient(135deg, #2563eb, #4f46e5);
       color: white;
       border: none;
       border-radius: 16px;
-      padding: 16px 24px;
-      font-size: 1.1em;
+      padding: clamp(14px, 3vw, 18px) 24px;
+      font-size: clamp(1rem, 4vw, 1.15rem);
       font-weight: 600;
       width: 100%;
       cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 20px;
+      transition: all var(--transition);
       box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+      letter-spacing: 0.3px;
     }
     button:active {
       transform: scale(0.97);
@@ -162,44 +214,63 @@
       box-shadow: none;
       cursor: not-allowed;
     }
+
+    /* ---------- BADGES & METER ---------- */
     .badge {
       display: inline-block;
       padding: 6px 14px;
       border-radius: 30px;
-      font-size: 0.9em;
+      font-size: 0.9rem;
       font-weight: 600;
-      letter-spacing: -0.2px;
     }
     .badge-low { background: #dcfce7; color: #15803d; }
     .badge-medium { background: #fef3c7; color: #b45309; }
     .badge-high { background: #fee2e2; color: #b91c1c; }
-    .hidden { display: none !important; }
-    hr { border: 0; height: 1px; background: #e2e8f0; margin: 24px 0; }
-    footer {
-      text-align: center;
-      color: #94a3b8;
-      font-size: 0.85em;
-      margin-top: 8px;
+
+    .meter {
+      height: 10px;
+      border-radius: 10px;
+      background: #e2e8f0;
+      overflow: hidden;
+      margin: 8px 0 14px;
     }
-    /* Premium box */
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 10px;
+      transition: width 0.8s ease;
+    }
+    .meter-low { background: #22c55e; }
+    .meter-medium { background: #f59e0b; }
+    .meter-high { background: #ef4444; }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--color-border);
+      margin: 24px 0;
+    }
+
+    /* ---------- PREMIUM BOX ---------- */
     .premium-box {
       border: 2px solid #22c55e;
-      border-radius: 24px;
-      padding: 24px;
+      border-radius: var(--radius);
+      padding: clamp(16px, 4vw, 28px);
       text-align: center;
       margin: 24px 0 8px;
       background: linear-gradient(135deg, #f0fdf4, #dcfce7);
     }
     .premium-box h3 {
-      font-size: 1.3em;
+      font-size: clamp(1.1rem, 5vw, 1.4rem);
       margin-bottom: 12px;
       color: #14532d;
     }
     .premium-box ul {
       text-align: left;
-      margin: 16px 0;
+      margin: 16px auto;
+      max-width: 350px;
       color: #334155;
-      list-style-type: none;
+      list-style: none;
       padding-left: 0;
     }
     .premium-box ul li::before {
@@ -211,33 +282,19 @@
       display: inline-block;
       background: #22c55e;
       color: white;
-      padding: 16px 28px;
+      padding: clamp(14px, 3vw, 18px) 28px;
       text-decoration: none;
-      border-radius: 16px;
+      border-radius: 14px;
       font-weight: 700;
       margin-top: 12px;
       box-shadow: 0 4px 12px rgba(34,197,94,0.3);
-      transition: 0.2s;
+      transition: var(--transition);
+      font-size: 1rem;
     }
     .premium-btn:active { transform: scale(0.97); }
-    /* Risk meter */
-    .meter {
-      height: 12px;
-      border-radius: 12px;
-      background: #e2e8f0;
-      overflow: hidden;
-      margin: 8px 0 12px;
-    }
-    .meter-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 12px;
-      transition: width 0.8s ease;
-    }
-    .meter-low { background: #22c55e; }
-    .meter-medium { background: #f59e0b; }
-    .meter-high { background: #ef4444; }
-    /* Fade animation */
+
+    /* ---------- UTILS ---------- */
+    .hidden { display: none !important; }
     .fade-in {
       animation: fadeIn 0.5s ease;
     }
@@ -245,18 +302,27 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* Honeypot (anti-bot) */
-    .hp-field { position: absolute; left: -9999px; }
-    /* Teaser note */
-    .teaser-note { color: #64748b; font-style: italic; margin: 12px 0; }
+    .teaser-note {
+      color: #64748b;
+      font-style: italic;
+      margin: 12px 0;
+    }
     .reset-link {
-      color: #2563eb;
+      color: var(--color-accent);
       text-decoration: underline;
       cursor: pointer;
-      font-size: 0.95em;
+      font-size: 0.95rem;
       display: inline-block;
-      margin-top: 12px;
+      margin-top: 16px;
     }
+    footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+    /* Anti-bot honeypot */
+    .hp-field { position: absolute; left: -9999px; }
   </style>
 </head>
 <body>
@@ -269,62 +335,69 @@
 
   <!-- INPUT CARD -->
   <div class="card fade-in" id="input-card">
-    <!-- Honeypot anti-bot field -->
+    <!-- Honeypot anti-bot -->
     <input type="text" class="hp-field" name="hp_email" autocomplete="off" tabindex="-1">
 
-    <label>
-      Monthly Revenue ($)
-      <span class="info-icon" data-tooltip="Total income before costs">?</span>
-    </label>
-    <input type="number" id="revenue" placeholder="0" min="0" step="any" inputmode="decimal">
-    <div class="validation-feedback" id="revenue-feedback"></div>
+    <div class="input-grid">
+      <div class="field-group">
+        <label>Monthly Revenue ($)
+          <span class="info-icon" data-tooltip="Total income before costs">?</span>
+        </label>
+        <input type="number" id="revenue" placeholder="0" min="0" step="any" inputmode="decimal">
+        <div class="validation-feedback" id="revenue-feedback"></div>
+      </div>
 
-    <label>
-      Monthly Variable Costs ($)
-      <span class="info-icon" data-tooltip="Costs that change with sales (materials, shipping)">?</span>
-    </label>
-    <input type="number" id="variableCosts" placeholder="0" min="0" step="any" inputmode="decimal">
-    <div class="validation-feedback" id="variableCosts-feedback"></div>
+      <div class="field-group">
+        <label>Monthly Variable Costs ($)
+          <span class="info-icon" data-tooltip="Costs that change with sales (materials, shipping)">?</span>
+        </label>
+        <input type="number" id="variableCosts" placeholder="0" min="0" step="any" inputmode="decimal">
+        <div class="validation-feedback" id="variableCosts-feedback"></div>
+      </div>
 
-    <label>
-      Monthly Fixed Costs ($)
-      <span class="info-icon" data-tooltip="Rent, salaries, subscriptions — costs that stay the same">?</span>
-    </label>
-    <input type="number" id="fixedCosts" placeholder="0" min="0" step="any" inputmode="decimal">
-    <div class="validation-feedback" id="fixedCosts-feedback"></div>
+      <div class="field-group">
+        <label>Monthly Fixed Costs ($)
+          <span class="info-icon" data-tooltip="Rent, salaries, subscriptions — stay the same">?</span>
+        </label>
+        <input type="number" id="fixedCosts" placeholder="0" min="0" step="any" inputmode="decimal">
+        <div class="validation-feedback" id="fixedCosts-feedback"></div>
+      </div>
 
-    <label>
-      Cash on Hand ($)
-      <span class="info-icon" data-tooltip="Available cash in bank to cover emergencies">?</span>
-    </label>
-    <input type="number" id="cashBuffer" placeholder="0" min="0" step="any" inputmode="decimal">
-    <div class="validation-feedback" id="cashBuffer-feedback"></div>
+      <div class="field-group">
+        <label>Cash on Hand ($)
+          <span class="info-icon" data-tooltip="Available cash for emergencies">?</span>
+        </label>
+        <input type="number" id="cashBuffer" placeholder="0" min="0" step="any" inputmode="decimal">
+        <div class="validation-feedback" id="cashBuffer-feedback"></div>
+      </div>
 
-    <label>
-      Monthly Debt Payments ($)
-      <span class="info-icon" data-tooltip="Loan repayments, credit lines, equipment finance">?</span>
-    </label>
-    <input type="number" id="debtPayments" placeholder="0" min="0" step="any" inputmode="decimal">
-    <div class="validation-feedback" id="debtPayments-feedback"></div>
+      <div class="field-group full-width">
+        <label>Monthly Debt Payments ($)
+          <span class="info-icon" data-tooltip="Loan repayments, credit lines, equipment finance">?</span>
+        </label>
+        <input type="number" id="debtPayments" placeholder="0" min="0" step="any" inputmode="decimal">
+        <div class="validation-feedback" id="debtPayments-feedback"></div>
+      </div>
+    </div>
 
-    <button id="analyze-btn" onclick="runAnalysis()">🔍 Analyze My Finances</button>
+    <button id="analyze-btn" onclick="runAnalysis()" style="margin-top: 24px;">🔍 Analyze My Finances</button>
   </div>
 
-  <!-- TEASER CARD (after analysis, before email) -->
+  <!-- TEASER CARD -->
   <div class="card fade-in hidden" id="teaser-card">
-    <h2 style="margin-bottom:16px;">Your Financial Snapshot</h2>
+    <h2 style="font-size: clamp(1.3rem, 5vw, 1.6rem); margin-bottom: 16px;">Your Financial Snapshot</h2>
     <div id="teaser-content"></div>
     <p class="teaser-note">Enter your email to unlock your complete risk breakdown and top driver.</p>
     <input type="email" id="user-email" placeholder="you@company.com" inputmode="email" style="margin-bottom:10px;">
     <div class="validation-feedback" id="email-feedback"></div>
     <button id="unlock-btn" onclick="unlockFullReport()">📊 Unlock Full Report</button>
-    <p style="font-size:0.8em; color:#94a3b8; margin-top:8px;">No spam. Your data stays private.</p>
+    <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">No spam. Your data stays private.</p>
     <p class="reset-link" onclick="resetTool()">← Start New Analysis</p>
   </div>
 
-  <!-- FULL REPORT CARD (after email) -->
+  <!-- FULL REPORT CARD -->
   <div class="card fade-in hidden" id="full-report-card">
-    <h2 style="margin-bottom:16px;">Your Complete Financial Health Report</h2>
+    <h2 style="font-size: clamp(1.3rem, 5vw, 1.6rem); margin-bottom: 16px;">Your Complete Financial Health Report</h2>
     <div id="full-report-content"></div>
     <hr>
     <div class="premium-box">
@@ -337,7 +410,7 @@
       </ul>
       <p><strong>One‑time report: $27</strong></p>
       <a href="YOUR_PAYTABS_PAYMENT_LINK" target="_blank" class="premium-btn">Unlock Now</a>
-      <p style="font-size:0.8em; margin-top:8px; color:#475569;">Secure payment via PayTabs</p>
+      <p style="font-size:0.8rem; margin-top:8px; color:#475569;">Secure payment via PayTabs</p>
     </div>
     <p class="reset-link" onclick="resetTool()">← Start New Analysis</p>
   </div>
@@ -346,11 +419,11 @@
 </div>
 
 <script>
-  // Global state
+  // ---------- GLOBAL STATE ----------
   let fullReportHTML = '';
   let analysisLocked = false;
 
-  // -------------------- VALIDATION --------------------
+  // ---------- VALIDATION ----------
   function validateNumberInput(id, feedbackId) {
     const input = document.getElementById(id);
     const feedback = document.getElementById(feedbackId);
@@ -358,7 +431,7 @@
     if (val === '') {
       input.classList.remove('valid', 'invalid');
       feedback.textContent = '';
-      return true; // empty is allowed until submit
+      return true;
     }
     const num = parseFloat(val);
     if (isNaN(num) || num < 0) {
@@ -375,37 +448,33 @@
   }
 
   function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  // Attach real-time validation
+  // Real-time validation listeners
   document.getElementById('revenue').addEventListener('input', () => validateNumberInput('revenue', 'revenue-feedback'));
   document.getElementById('variableCosts').addEventListener('input', () => validateNumberInput('variableCosts', 'variableCosts-feedback'));
   document.getElementById('fixedCosts').addEventListener('input', () => validateNumberInput('fixedCosts', 'fixedCosts-feedback'));
   document.getElementById('cashBuffer').addEventListener('input', () => validateNumberInput('cashBuffer', 'cashBuffer-feedback'));
   document.getElementById('debtPayments').addEventListener('input', () => validateNumberInput('debtPayments', 'debtPayments-feedback'));
 
-  // -------------------- ANTI-BOT HONEYPOT CHECK --------------------
+  // ---------- ANTI-BOT ----------
   function isBot() {
     const hp = document.querySelector('.hp-field');
     if (hp && hp.value !== '') return true;
-    // Additional: check quick submission time (if form filled too fast)
     if (window._pageLoadTime && (Date.now() - window._pageLoadTime < 1500)) return true;
     return false;
   }
   window._pageLoadTime = Date.now();
 
-  // -------------------- MAIN ANALYSIS --------------------
+  // ---------- ANALYSIS ENGINE ----------
   function runAnalysis() {
-    // Throttle
     if (analysisLocked) return;
     const btn = document.getElementById('analyze-btn');
     btn.disabled = true;
     btn.textContent = 'Analyzing...';
     analysisLocked = true;
 
-    // Honeypot check
     if (isBot()) {
       alert('Session invalid. Please reload the page.');
       btn.disabled = false;
@@ -414,12 +483,10 @@
       return;
     }
 
-    // Validate all fields
     const fields = ['revenue', 'variableCosts', 'fixedCosts', 'cashBuffer', 'debtPayments'];
     let allValid = true;
     for (let id of fields) {
-      const val = document.getElementById(id).value.trim();
-      if (val === '' || !validateNumberInput(id, id+'-feedback')) {
+      if (document.getElementById(id).value.trim() === '' || !validateNumberInput(id, id+'-feedback')) {
         allValid = false;
         document.getElementById(id).classList.add('invalid');
       }
@@ -432,14 +499,13 @@
       return;
     }
 
-    // Gather values
     const revenue = parseFloat(document.getElementById('revenue').value) || 0;
     const variableCosts = parseFloat(document.getElementById('variableCosts').value) || 0;
     const fixedCosts = parseFloat(document.getElementById('fixedCosts').value) || 0;
     const cashBuffer = parseFloat(document.getElementById('cashBuffer').value) || 0;
     const debtPayments = parseFloat(document.getElementById('debtPayments').value) || 0;
 
-    // Core engine metrics (v2)
+    // Core metrics
     const netCashFlow = revenue - variableCosts - fixedCosts - debtPayments;
     const totalObligations = fixedCosts + debtPayments;
     const cashRunwayMonths = netCashFlow >= 0 ? Infinity : (cashBuffer / (totalObligations + variableCosts - revenue));
@@ -447,7 +513,6 @@
     const costRigidity = totalObligations / (totalObligations + variableCosts);
     const revenueReliability = 1 - (variableCosts / revenue);
 
-    // Risk classification
     let riskLevel = 'LOW';
     let riskColorClass = 'badge-low';
     if (netCashFlow < 0 || liquidityStressScore > 0.7) riskLevel = 'HIGH';
@@ -455,12 +520,8 @@
     if (riskLevel === 'HIGH') riskColorClass = 'badge-high';
     else if (riskLevel === 'MEDIUM') riskColorClass = 'badge-medium';
 
-    // Meter width
-    let meterWidth = 30; // low
-    if (riskLevel === 'MEDIUM') meterWidth = 60;
-    if (riskLevel === 'HIGH') meterWidth = 90;
+    let meterWidth = riskLevel === 'HIGH' ? 90 : (riskLevel === 'MEDIUM' ? 60 : 30);
 
-    // Build teaser HTML (safe, no user input inserted unescaped)
     const teaserHTML = `
       <p style="margin-bottom:12px;"><strong>Net Cash Flow:</strong> <span style="font-size:1.4em; font-weight:700; color:${netCashFlow>=0?'#15803d':'#b91c1c'}">$${netCashFlow.toFixed(0)}/month</span></p>
       <p>Cash Runway: <strong>${isFinite(cashRunwayMonths) ? cashRunwayMonths.toFixed(1)+' months' : 'Positive flow'}</strong></p>
@@ -471,7 +532,6 @@
       <p style="margin-top:12px;">Overall Risk: <span class="badge ${riskColorClass}">${riskLevel}</span> <span class="teaser-note">(enter email to see top driver)</span></p>
     `;
 
-    // Build full report with driver and recommendation
     let driver = '';
     if (netCashFlow < 0) driver = 'Negative net cash flow';
     else if (liquidityStressScore > 0.7) driver = 'High liquidity stress';
@@ -489,13 +549,11 @@
       <p style="margin-top:16px;"><em>Recommendation:</em> ${getRecommendation(netCashFlow, liquidityStressScore, cashRunwayMonths)}</p>
     `;
 
-    // Switch cards
     document.getElementById('input-card').classList.add('hidden');
     document.getElementById('teaser-card').classList.remove('hidden');
     document.getElementById('teaser-content').innerHTML = teaserHTML;
     document.getElementById('full-report-card').classList.add('hidden');
 
-    // Reset button state after a small delay
     setTimeout(() => {
       btn.disabled = false;
       btn.textContent = '🔍 Analyze My Finances';
@@ -510,7 +568,7 @@
     return 'Your finances are stable. Consider scaling or investing surplus cash.';
   }
 
-  // -------------------- UNLOCK FULL REPORT --------------------
+  // ---------- UNLOCK FULL REPORT ----------
   function unlockFullReport() {
     const emailInput = document.getElementById('user-email');
     const email = emailInput.value.trim();
@@ -524,7 +582,7 @@
     emailInput.classList.remove('invalid');
     feedback.textContent = '';
 
-    // Send email to Google Sheets (non-blocking)
+    // Send to Google Sheets (placeholder URL)
     try {
       fetch('YOUR_APPS_SCRIPT_URL', {
         method: 'POST',
@@ -533,18 +591,16 @@
       }).catch(() => {});
     } catch(e) {}
 
-    // Show full report
     document.getElementById('full-report-content').innerHTML = fullReportHTML;
     document.getElementById('teaser-card').classList.add('hidden');
     document.getElementById('full-report-card').classList.remove('hidden');
   }
 
-  // -------------------- RESET TOOL --------------------
+  // ---------- RESET ----------
   function resetTool() {
     document.getElementById('input-card').classList.remove('hidden');
     document.getElementById('teaser-card').classList.add('hidden');
     document.getElementById('full-report-card').classList.add('hidden');
-    // Clear inputs
     document.querySelectorAll('input[type="number"]').forEach(inp => {
       inp.value = '';
       inp.classList.remove('valid', 'invalid');
