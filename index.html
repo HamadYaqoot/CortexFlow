@@ -1,278 +1,179 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CortexFlow — Decision Intelligence System</title>
-
-<style>
-:root{
-  --bg:#0b0f1a;
-  --surface:#111827;
-  --surface-2:#1a2235;
-  --border:#1f2d45;
-
-  --text-1:#f0f4ff;
-  --text-2:#94a3c4;
-  --text-3:#5a6a8a;
-
-  --gold:#f0a500;
-  --green:#10b981;
-  --amber:#f59e0b;
-  --red:#ef4444;
-
-  --radius:14px;
-}
-
-body{
-  margin:0;
-  font-family:system-ui;
-  background:var(--bg);
-  color:var(--text-1);
-  padding:20px;
-}
-
-.container{max-width:520px;margin:auto;}
-
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:16px;
-  margin-bottom:14px;
-}
-
-label{font-size:12px;color:var(--text-2);display:block;margin-bottom:6px}
-
-input,select{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  background:var(--surface-2);
-  border:1px solid var(--border);
-  color:white;
-  border-radius:8px;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:var(--gold);
-  font-weight:700;
-  cursor:pointer;
-}
-
-.metric{
-  display:flex;
-  justify-content:space-between;
-  margin:6px 0;
-  font-size:13px;
-}
-
-.badge{
-  padding:10px;
-  border-radius:10px;
-  text-align:center;
-  margin-bottom:10px;
-  font-weight:700;
-}
-
-.low{background:rgba(16,185,129,0.15);color:var(--green)}
-.medium{background:rgba(245,158,11,0.15);color:var(--amber)}
-.high{background:rgba(239,68,68,0.15);color:var(--red)}
-
-.small{font-size:12px;color:var(--text-2)}
-
-.range-label{font-size:11px;color:var(--text-3)}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CortexFlow — Free SME Financial Health Check</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 0; background: #f9fafb; color: #1a1a1a; }
+    .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+    header { text-align: center; margin-bottom: 30px; }
+    h1 { font-size: 1.8em; margin-bottom: 5px; }
+    .subtitle { color: #555; }
+    .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    label { display: block; font-weight: 600; margin: 12px 0 4px; }
+    input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+    button { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 14px 20px; font-size: 18px; width: 100%; font-weight: 600; cursor: pointer; margin-top: 10px; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+    .badge-low { background: #dcfce7; color: #166534; }
+    .badge-medium { background: #fef9c3; color: #854d0e; }
+    .badge-high { background: #fee2e2; color: #991b1b; }
+    .hidden { display: none; }
+    hr { margin: 20px 0; }
+    footer { text-align: center; color: #999; margin-top: 30px; font-size: 14px; }
+    .premium-box { border: 2px solid #4CAF50; border-radius: 16px; padding: 20px; text-align: center; margin: 20px 0; background: #f0fdf4; }
+    .premium-box a { background: #4CAF50; color: white; padding: 14px 24px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; margin-top: 10px; }
+    .teaser-note { color: #888; font-style: italic; }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <header>
+      <h1>CortexFlow</h1>
+      <p class="subtitle">Free SME Financial Health Check</p>
+      <p>Instantly see your cash position, liquidity risk, and financial health — no spreadsheet needed.</p>
+    </header>
 
-<div class="container">
-
-<!-- INPUTS -->
-<div class="card">
-  <h3>Financial Inputs</h3>
-
-  <label>Inflow</label>
-  <input id="inflow" type="number" value="0">
-
-  <label>Outflow</label>
-  <input id="outflow" type="number" value="0">
-
-  <label>Reserve</label>
-  <input id="reserve" type="number" value="0">
-
-  <label>Stability</label>
-  <select id="stability">
-    <option value="100">Stable</option>
-    <option value="70">Medium</option>
-    <option value="30">Unstable</option>
-  </select>
-
-  <label>Delay</label>
-  <select id="delay">
-    <option value="100">On time</option>
-    <option value="50">Delayed</option>
-    <option value="10">Severely delayed</option>
-  </select>
-
-  <label>Flexibility</label>
-  <select id="flex">
-    <option value="10">Flexible</option>
-    <option value="50">Medium</option>
-    <option value="90">Fixed</option>
-  </select>
-
-  <button onclick="runEngine()">Analyze</button>
-</div>
-
-<!-- RESULTS -->
-<div class="card" id="results" style="display:none">
-
-  <div id="badge"></div>
-
-  <div class="metric"><span>Net Flow</span><span id="net"></span></div>
-  <div class="metric"><span>Runway</span><span id="runway"></span></div>
-  <div class="metric"><span>Stress</span><span id="stress"></span></div>
-
-</div>
-
-<!-- SCENARIO -->
-<div class="card" id="scenario" style="display:none">
-
-  <h3>Scenario Simulator</h3>
-
-  <label>Revenue Change (%)</label>
-  <input type="range" id="rev" min="-30" max="30" value="0">
-  <div class="range-label" id="revv">0%</div>
-
-  <label>Expense Change (%)</label>
-  <input type="range" id="exp" min="-30" max="30" value="0">
-  <div class="range-label" id="expv">0%</div>
-
-  <label>Payment Delay (days)</label>
-  <input type="range" id="del" min="-20" max="20" value="0">
-  <div class="range-label" id="delv">0</div>
-
-  <div id="scenarioOut" style="margin-top:10px"></div>
-
-</div>
-
-</div>
-
-<script>
-
-/* ===================== ENGINE ===================== */
-
-const Engine = {
-
-run(inp){
-  const net = inp.inflow - inp.outflow;
-
-  const runway =
-    net >= 0 ? Infinity :
-    inp.reserve > 0 ? inp.reserve / Math.abs(net) : 0;
-
-  const stress =
-    net >= 0 ? 0 : Math.min(100, (Math.abs(net)/(inp.reserve||1))*100);
-
-  const risk =
-    net < 0 && stress > 70 ? "HIGH" :
-    net >= 0 ? "LOW" : "MEDIUM";
-
-  return {net, runway, stress, risk};
-}
-
-};
-
-/* ===================== SCENARIO ENGINE ===================== */
-
-const Scenario = {
-
-apply(inp, sc){
-
-  const mod = {
-    ...inp,
-    inflow: inp.inflow * (1 + sc.rev/100),
-    outflow: inp.outflow * (1 + sc.exp/100),
-    delay: inp.delay + sc.delay
-  };
-
-  const base = Engine.run(inp);
-  const after = Engine.run(mod);
-
-  return {base, after};
-
-}
-
-};
-
-/* ===================== UI ===================== */
-
-let currentInput = {};
-
-function runEngine(){
-
-  currentInput = {
-    inflow:+inflow.value,
-    outflow:+outflow.value,
-    reserve:+reserve.value,
-    stability:+stability.value,
-    delay:+delay.value,
-    flex:+flex.value
-  };
-
-  const r = Engine.run(currentInput);
-
-  results.style.display="block";
-  scenario.style.display="block";
-
-  net.innerText = r.net;
-  stress.innerText = r.stress.toFixed(1);
-
-  runway.innerText =
-    r.runway === Infinity ? "Strong" : r.runway.toFixed(1)+" months";
-
-  badge.innerHTML =
-    `<div class="${r.risk.toLowerCase()} badge">${r.risk} RISK</div>`;
-
-  updateScenario();
-}
-
-/* ===================== SCENARIO UI ===================== */
-
-function updateScenario(){
-
-  const sc = {
-    rev:+rev.value,
-    exp:+exp.value,
-    delay:+del.value
-  };
-
-  revv.innerText = sc.rev+"%";
-  expv.innerText = sc.exp+"%";
-  delv.innerText = sc.delay;
-
-  const s = Scenario.apply(currentInput, sc);
-
-  scenarioOut.innerHTML = `
-    <div class="small">
-    <b>Risk Shift:</b> ${s.base.risk} → ${s.after.risk}<br>
-    <b>Net Flow Change:</b> ${s.after.net - s.base.net}<br>
-    <b>Stress:</b> ${s.after.stress.toFixed(1)}
+    <!-- INPUT CARD -->
+    <div class="card" id="input-card">
+      <label>Monthly Revenue ($)</label>
+      <input type="number" id="revenue" placeholder="0" required>
+      <label>Monthly Variable Costs ($)</label>
+      <input type="number" id="variableCosts" placeholder="0" required>
+      <label>Monthly Fixed Costs ($)</label>
+      <input type="number" id="fixedCosts" placeholder="0" required>
+      <label>Cash on Hand ($)</label>
+      <input type="number" id="cashBuffer" placeholder="0" required>
+      <label>Monthly Debt Payments ($)</label>
+      <input type="number" id="debtPayments" placeholder="0" required>
+      <button onclick="runAnalysis()">Analyze My Finances</button>
     </div>
-  `;
-}
 
-/* listeners */
+    <!-- TEASER RESULT (shown after analysis before email) -->
+    <div class="card hidden" id="teaser-card">
+      <h2>Your Financial Snapshot</h2>
+      <div id="teaser-content"></div>
+      <p class="teaser-note">Enter your email to unlock your complete risk breakdown and top driver.</p>
+      <div id="email-capture">
+        <input type="email" id="user-email" placeholder="you@company.com" required>
+        <button onclick="unlockFullReport()">Unlock Full Report</button>
+        <p style="font-size:12px; color:#888;">No spam. Your data stays private.</p>
+      </div>
+    </div>
 
-rev.oninput = exp.oninput = del.oninput = updateScenario;
+    <!-- FULL REPORT (shown after email) -->
+    <div class="card hidden" id="full-report-card">
+      <h2>Your Complete Financial Health Report</h2>
+      <div id="full-report-content"></div>
+      <hr>
+      <!-- Premium upsell -->
+      <div class="premium-box">
+        <h3>🔐 Go Deeper: See Your 6‑Month Risk Trajectory</h3>
+        <p>Unlock the full decision intelligence report:</p>
+        <ul style="text-align:left;">
+          <li>Scenario stress test (best/base/worst)</li>
+          <li>Risk decomposition – ranked drivers</li>
+          <li>6‑month cash projection</li>
+          <li>Plain‑English CFO summary</li>
+        </ul>
+        <p><strong>One‑time report: $27</strong></p>
+        <a href="YOUR_PAYTABS_PAYMENT_LINK" target="_blank">Unlock Now</a>
+        <p style="font-size:12px;">Secure payment via PayTabs</p>
+      </div>
+    </div>
 
-</script>
+    <footer>Powered by CortexFlow — Financial Decision Intelligence</footer>
+  </div>
 
+  <script>
+    // Global variable to hold full report HTML until email is submitted
+    let fullReportHTML = '';
+
+    function runAnalysis() {
+      const revenue = parseFloat(document.getElementById('revenue').value) || 0;
+      const variableCosts = parseFloat(document.getElementById('variableCosts').value) || 0;
+      const fixedCosts = parseFloat(document.getElementById('fixedCosts').value) || 0;
+      const cashBuffer = parseFloat(document.getElementById('cashBuffer').value) || 0;
+      const debtPayments = parseFloat(document.getElementById('debtPayments').value) || 0;
+
+      // Core metrics
+      const netCashFlow = revenue - variableCosts - fixedCosts - debtPayments;
+      const totalObligations = fixedCosts + debtPayments;
+      const cashRunwayMonths = netCashFlow >= 0 ? Infinity : (cashBuffer / (totalObligations + variableCosts - revenue));
+      const liquidityStressScore = totalObligations / (cashBuffer + revenue * 0.1); // simplified
+      const costRigidity = totalObligations / (totalObligations + variableCosts);
+      const revenueReliability = 1 - (variableCosts / revenue); // simplistic: high reliability if high margin
+
+      // Risk classification
+      let riskLevel = 'LOW';
+      let riskColor = 'badge-low';
+      if (netCashFlow < 0 || liquidityStressScore > 0.7) riskLevel = 'HIGH';
+      else if (netCashFlow < 500 || liquidityStressScore > 0.4 || cashRunwayMonths < 3) riskLevel = 'MEDIUM';
+      if (riskLevel === 'HIGH') riskColor = 'badge-high';
+      else if (riskLevel === 'MEDIUM') riskColor = 'badge-medium';
+
+      // Build teaser HTML (limited info)
+      const teaserHTML = `
+        <p>Net Cash Flow: <strong>$${netCashFlow.toFixed(0)}/month</strong></p>
+        <p>Cash Runway: <strong>${isFinite(cashRunwayMonths) ? cashRunwayMonths.toFixed(1) + ' months' : 'Positive flow'}</strong></p>
+        <p>Liquidity Stress: <span class="badge ${riskColor}">${riskLevel}</span></p>
+        <p>Cost Rigidity: <strong>${(costRigidity*100).toFixed(0)}%</strong></p>
+        <p>Revenue Reliability: <strong>${(revenueReliability*100).toFixed(0)}%</strong></p>
+        <p>Overall Risk Level: <span class="badge ${riskColor}">${riskLevel}</span> <span class="teaser-note">(enter email to see top driver)</span></p>
+      `;
+
+      // Build full report HTML (unlocked after email)
+      let driver = '';
+      if (netCashFlow < 0) driver = 'Negative net cash flow';
+      else if (liquidityStressScore > 0.7) driver = 'High liquidity stress';
+      else if (costRigidity > 0.8) driver = 'High fixed cost dependency';
+      else driver = 'Balanced financial structure';
+
+      fullReportHTML = `
+        <p><strong>Net Cash Flow:</strong> $${netCashFlow.toFixed(0)}/month</p>
+        <p><strong>Cash Runway:</strong> ${isFinite(cashRunwayMonths) ? cashRunwayMonths.toFixed(1) + ' months' : 'Indefinite (positive cash flow)'}</p>
+        <p><strong>Liquidity Stress Score:</strong> ${(liquidityStressScore*100).toFixed(0)}%</p>
+        <p><strong>Cost Rigidity:</strong> ${(costRigidity*100).toFixed(0)}% (fixed costs + debt) / total costs</p>
+        <p><strong>Revenue Reliability:</strong> ${(revenueReliability*100).toFixed(0)}% (margin after variable costs)</p>
+        <p><strong>Risk Driver:</strong> ${driver}</p>
+        <p style="margin-top:15px;"><em>Recommendation:</em> ${getRecommendation(netCashFlow, liquidityStressScore, cashRunwayMonths)}</p>
+      `;
+
+      // Show teaser and email capture, hide input
+      document.getElementById('input-card').classList.add('hidden');
+      document.getElementById('teaser-card').classList.remove('hidden');
+      document.getElementById('teaser-content').innerHTML = teaserHTML;
+      document.getElementById('full-report-card').classList.add('hidden');
+    }
+
+    function getRecommendation(netCashFlow, stress, runway) {
+      if (netCashFlow < 0) return 'Focus on improving cash flow: reduce variable costs or renegotiate payment terms.';
+      if (stress > 0.7) return 'Your fixed obligations are high. Build a larger cash buffer or restructure debt.';
+      if (runway < 3) return 'Your runway is short. Increase cash reserves or secure a credit line.';
+      return 'Your finances are stable. Consider scaling or investing surplus cash.';
+    }
+
+    function unlockFullReport() {
+      const email = document.getElementById('user-email').value;
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      // Send email to Google Sheets via Apps Script
+      fetch('YOUR_APPS_SCRIPT_URL', {
+        method: 'POST',
+        body: JSON.stringify({ email: email, timestamp: new Date().toISOString() }),
+        headers: { 'Content-Type': 'application/json' }
+      }).catch(() => {});
+
+      // Show full report and hide teaser
+      document.getElementById('full-report-content').innerHTML = fullReportHTML;
+      document.getElementById('teaser-card').classList.add('hidden');
+      document.getElementById('full-report-card').classList.remove('hidden');
+    }
+  </script>
 </body>
 </html>
+```
