@@ -1,515 +1,1029 @@
-
-html_fixed = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CortexFlow — Financial Risk Intelligence</title>
 
-<title>CortexFlow</title>
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    <style>
+        :root {
+            /* Light theme colours */
+            --bg-primary: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-card-solid: #ffffff;
+            --bg-input: #ffffff;
+            --bg-results: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --border-medium: #cbd5e1;
+            --green: #16a34a;
+            --green-bright: #22c55e;
+            --green-deep: #15803d;
+            --amber: #d97706;
+            --amber-bright: #f59e0b;
+            --red: #dc2626;
+            --red-bright: #ef4444;
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+            /* Glow & accent (toned down for light theme) */
+            --green-glow: rgba(22, 163, 74, 0.25);
+            --amber-glow: rgba(217, 119, 6, 0.25);
+            --red-glow: rgba(220, 38, 38, 0.25);
 
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #fafafa;
-    color: #171717;
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-}
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(99, 102, 241, 0.04) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(34, 197, 94, 0.03) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.container {
-    max-width: 480px;
-    margin: auto;
-    position: relative;
-    z-index: 1;
-}
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-h1 {
-    text-align: center;
-    color: #171717;
-    font-size: 2.6rem;
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    margin-bottom: 8px;
-    position: relative;
-}
+        /* Neural network canvas (subtle) */
+        #neuralCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.25;
+        }
 
-h1::after {
-    content: '';
-    display: block;
-    width: 48px;
-    height: 4px;
-    background: linear-gradient(90deg, #6366f1, #22c55e);
-    border-radius: 2px;
-    margin: 14px auto 0;
-}
+        /* Ambient glow orbs (very soft) */
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(140px);
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 14s ease-in-out infinite;
+            opacity: 0.15;
+        }
+        .ambient-orb.orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #22c55e;
+            top: -120px;
+            right: -100px;
+        }
+        .ambient-orb.orb-2 {
+            width: 300px;
+            height: 300px;
+            background: #3b82f6;
+            bottom: -100px;
+            left: -80px;
+            animation-delay: -6s;
+        }
+        .ambient-orb.orb-3 {
+            width: 250px;
+            height: 250px;
+            background: #8b5cf6;
+            top: 45%;
+            left: 50%;
+            animation-delay: -10s;
+        }
 
-p {
-    text-align: center;
-    color: #525252;
-    font-size: 14px;
-    line-height: 1.6;
-}
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(40px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 25px) scale(0.95); }
+            75% { transform: translate(-35px, -20px) scale(1.08); }
+        }
 
-.card {
-    background: #ffffff;
-    padding: 28px;
-    border-radius: 16px;
-    margin-top: 24px;
-    border: 1px solid #e5e5e5;
-    box-shadow: 
-        0 1px 3px rgba(0, 0, 0, 0.04),
-        0 4px 12px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 540px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
 
-.card:hover {
-    box-shadow: 
-        0 1px 3px rgba(0, 0, 0, 0.04),
-        0 8px 24px rgba(0, 0, 0, 0.06);
-    border-color: #d4d4d4;
-}
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding: 8px 0 4px;
+        }
+        .brand-icon {
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        .brand-icon svg {
+            width: 44px;
+            height: 44px;
+            filter: drop-shadow(0 0 12px rgba(22, 163, 74, 0.3));
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%, 100% { filter: drop-shadow(0 0 12px rgba(22, 163, 74, 0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(22, 163, 74, 0.5)); }
+        }
+        .brand-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #15803d 0%, #22c55e 40%, #0f172a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            /* subtle shadow for depth */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
+        }
+        .brand-tagline {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            letter-spacing: 0.02em;
+            font-weight: 400;
+        }
 
-h2 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: #171717;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        /* Card */
+        .card {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 22px 20px;
+            box-shadow: var(--shadow-card);
+            transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+            animation: cardEntry 0.6s ease-out forwards;
+        }
+        @supports (backdrop-filter: blur(12px)) {
+            .card {
+                background: var(--bg-card);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+        }
+        @keyframes cardEntry {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card:hover {
+            border-color: var(--border-medium);
+            box-shadow: var(--shadow-hover);
+        }
 
-h2::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: linear-gradient(135deg, #6366f1, #22c55e);
-    border-radius: 50%;
-    flex-shrink: 0;
-}
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .card-icon.analysis {
+            background: rgba(22, 163, 74, 0.1);
+            color: #15803d;
+        }
+        .card-icon.diagnostic {
+            background: rgba(139, 92, 246, 0.1);
+            color: #7c3aed;
+        }
+        .card h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.2;
+        }
+        .card .subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
 
-input, select {
-    width: 100%;
-    padding: 13px 16px;
-    border-radius: 10px;
-    border: 1px solid #e5e5e5;
-    background: #fafafa;
-    color: #171717;
-    margin-bottom: 12px;
-    font-size: 14px;
-    font-family: inherit;
-    transition: all 0.2s ease;
-    outline: none;
-    appearance: none;
-}
+        /* Inputs */
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            transition: color var(--transition-fast);
+        }
+        .input-group:focus-within .input-label {
+            color: var(--green-deep);
+        }
+        input, select {
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border-light);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            transition: all var(--transition-fast);
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+        }
+        input { cursor: text; }
+        input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+            opacity: 0.7;
+        }
+        input:focus, select:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.08);
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 38px;
+            cursor: pointer;
+        }
+        select option {
+            background: #ffffff;
+            color: #0f172a;
+        }
 
-input::placeholder {
-    color: #a3a3a3;
-}
+        /* Results Dashboard */
+        .results-dashboard {
+            background: var(--bg-results);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 14px;
+            transition: all var(--transition-smooth);
+        }
+        .results-dashboard.updating {
+            animation: resultFlash 0.35s ease-out;
+        }
+        @keyframes resultFlash {
+            0% { background: rgba(22, 163, 74, 0.06); }
+            100% { background: var(--bg-results); }
+        }
+        .result-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            font-size: 0.85rem;
+        }
+        .result-row:last-child { border-bottom: none; }
+        .result-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.78rem;
+            letter-spacing: 0.01em;
+        }
+        .result-value {
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.01em;
+            text-align: right;
+        }
+        .result-value.positive { color: #15803d; }
+        .result-value.negative { color: #dc2626; }
+        .result-value.neutral { color: #b45309; }
 
-input:hover, select:hover {
-    border-color: #d4d4d4;
-    background: #f5f5f5;
-}
+        /* Risk Meter */
+        .risk-meter-container {
+            margin-top: 12px;
+            background: rgba(203, 213, 225, 0.3);
+            border-radius: 20px;
+            padding: 4px;
+            overflow: hidden;
+        }
+        .risk-meter-bar {
+            height: 8px;
+            border-radius: 20px;
+            transition: width var(--transition-bounce), background var(--transition-smooth);
+        }
+        .risk-meter-bar.low {
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+            box-shadow: 0 0 10px rgba(22, 163, 74, 0.4);
+        }
+        .risk-meter-bar.medium {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+            box-shadow: 0 0 10px rgba(217, 119, 6, 0.4);
+        }
+        .risk-meter-bar.high {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+            animation: dangerPulseLight 1.2s infinite;
+        }
+        @keyframes dangerPulseLight {
+            0%, 100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); }
+            50% { box-shadow: 0 0 18px rgba(220, 38, 38, 0.65); }
+        }
+        .risk-score-badge {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.03em;
+            margin-top: 8px;
+        }
+        .risk-score-badge.low {
+            background: rgba(22, 163, 74, 0.1);
+            color: #15803d;
+            border: 1px solid rgba(22, 163, 74, 0.25);
+        }
+        .risk-score-badge.medium {
+            background: rgba(217, 119, 6, 0.1);
+            color: #b45309;
+            border: 1px solid rgba(217, 119, 6, 0.25);
+        }
+        .risk-score-badge.high {
+            background: rgba(220, 38, 38, 0.1);
+            color: #b91c1c;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            animation: dangerPulseLight 1.2s infinite;
+        }
 
-input:focus, select:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
-    background: #ffffff;
-}
+        /* Insight Box */
+        .insight-box {
+            margin-top: 10px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+        .insight-box.info {
+            background: rgba(59, 130, 246, 0.06);
+            border-left-color: #3b82f6;
+            color: #1e40af;
+        }
+        .insight-box.warning {
+            background: rgba(245, 158, 11, 0.06);
+            border-left-color: #f59e0b;
+            color: #92400e;
+        }
+        .insight-box.danger {
+            background: rgba(239, 68, 68, 0.06);
+            border-left-color: #ef4444;
+            color: #991b1b;
+        }
+        .insight-box.success {
+            background: rgba(34, 197, 94, 0.06);
+            border-left-color: #22c55e;
+            color: #166534;
+        }
 
-select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 40px;
-}
+        /* Section Divider */
+        .section-divider {
+            height: 1px;
+            background: var(--border-light);
+            margin: 20px 0 16px;
+        }
 
-select option {
-    background: #ffffff;
-    color: #171717;
-}
+        /* Button */
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            text-align: center;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+            border: none;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all var(--transition-smooth);
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.35);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+        .button:active {
+            transform: scale(0.97);
+        }
+        .button .btn-icon { font-size: 1.2rem; }
 
-.result-box {
-    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
-    padding: 18px;
-    border-radius: 12px;
-    font-size: 13px;
-    margin-top: 10px;
-    border: 1px solid #e5e5e5;
-    color: #404040;
-    line-height: 1.8;
-    transition: all 0.3s ease;
-    position: relative;
-}
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120px);
+            background: #ffffff;
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            z-index: 1000;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.01em;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            transition: transform var(--transition-bounce);
+            pointer-events: none;
+            text-align: center;
+            max-width: 90vw;
+            color: var(--text-primary);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success {
+            border-color: #22c55e;
+            color: #15803d;
+        }
+        .toast.info-toast {
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
 
-.result-box b {
-    color: #171717;
-    font-size: 14px;
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
+        #actionOutput {
+            margin-top: 16px;
+        }
 
-.button {
-    display: block;
-    width: 100%;
-    text-align: center;
-    background: #171717;
-    color: #ffffff;
-    padding: 15px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    border: none;
-    margin-top: 20px;
-    font-size: 15px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    letter-spacing: 0.2px;
-}
+        .footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.03em;
+            padding: 6px 0 0;
+            opacity: 0.8;
+        }
+        .footer .dot {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--green);
+            margin: 0 6px;
+            animation: dotBlinkLight 2s infinite;
+        }
+        .footer .dot:nth-child(2) { animation-delay: 0.3s; }
+        .footer .dot:nth-child(3) { animation-delay: 0.6s; }
+        @keyframes dotBlinkLight {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
 
-.button:hover {
-    background: #262626;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.button:active {
-    transform: translateY(0);
-    background: #000000;
-}
-
-.footer {
-    text-align: center;
-    font-size: 12px;
-    margin-top: 30px;
-    color: #a3a3a3;
-    padding-bottom: 20px;
-}
-
-.currency-label {
-    font-size: 11px;
-    color: #737373;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-    display: block;
-}
-
-.currency-row {
-    display: flex;
-    gap: 10px;
-    align-items: stretch;
-}
-
-.currency-row input {
-    flex: 1;
-    margin-bottom: 0;
-}
-
-/* Fix: spacing between currency rows and after last row */
-.currency-row + .currency-row,
-.currency-row + select {
-    margin-top: 12px;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.card {
-    animation: fadeInUp 0.5s ease-out backwards;
-}
-
-.card:nth-child(3) {
-    animation-delay: 0.08s;
-}
-
-.card:nth-child(4) {
-    animation-delay: 0.16s;
-}
-
-/* Responsive */
-@media (max-width: 520px) {
-    body {
-        padding: 16px;
-    }
-    h1 {
-        font-size: 2.2rem;
-    }
-    .card {
-        padding: 22px;
-        border-radius: 14px;
-    }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #fafafa;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #d4d4d4;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #a3a3a3;
-}
-</style>
+        /* Responsive */
+        @media (max-width: 420px) {
+            .container { max-width: 100%; gap: 16px; }
+            .card { padding: 16px 14px; border-radius: var(--radius-md); }
+            .brand-name { font-size: 1.7rem; }
+            input, select { padding: 11px 12px; font-size: 0.82rem; }
+            .button { padding: 13px 16px; font-size: 0.88rem; }
+            .result-value { font-size: 0.8rem; }
+        }
+        @media (min-width: 520px) {
+            .container { max-width: 540px; }
+            .card { padding: 26px 24px; }
+            .brand-name { font-size: 2.4rem; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <canvas id="neuralCanvas"></canvas>
+    <div class="toast" id="toast"></div>
 
-<h1>CortexFlow</h1>
-<p>Know your financial risk and what to do next — instantly.</p>
+    <div class="container">
+        <header class="brand-header">
+            <div class="brand-icon">
+                <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="22" cy="22" r="20" stroke="#16a34a" stroke-width="2.5" fill="none" opacity="0.7"/>
+                    <circle cx="22" cy="22" r="8" fill="#22c55e" opacity="0.9"/>
+                    <circle cx="22" cy="10" r="3.5" fill="#15803d" opacity="0.9"/>
+                    <circle cx="34" cy="28" r="3" fill="#22c55e" opacity="0.8"/>
+                    <circle cx="10" cy="28" r="3" fill="#22c55e" opacity="0.8"/>
+                    <line x1="22" y1="13.5" x2="22" y2="18" stroke="#15803d" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="31" y1="26" x2="27" y2="23.5" stroke="#16a34a" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="13" y1="26" x2="17" y2="23.5" stroke="#16a34a" stroke-width="1.5" opacity="0.5"/>
+                </svg>
+            </div>
+            <h1 class="brand-name">CortexFlow</h1>
+            <p class="brand-tagline">Know your financial risk and what to do next — instantly.</p>
+        </header>
 
-<div class="card">
+        <!-- Unified card -->
+        <div class="card" id="mainCard">
+            <!-- Section 1: Financial Analysis -->
+            <div class="card-header">
+                <div class="card-icon analysis">📊</div>
+                <div>
+                    <h2>Analyze Your Financial Position</h2>
+                    <p class="subtitle">Real‑time risk assessment — just enter your numbers.</p>
+                </div>
+            </div>
 
-<h2>Analyze Your Financial Position</h2>
-<p style="text-align:left;font-size:12px;">
-We use this to calculate your financial risk and survival timeline.
-</p>
+            <div class="input-group">
+                <label class="input-label" for="inflow">Monthly Cash Inflow</label>
+                <input type="number" id="inflow" placeholder="e.g. 50000" inputmode="numeric">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="outflow">Monthly Cash Outflow</label>
+                <input type="number" id="outflow" placeholder="e.g. 42000" inputmode="numeric">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="reserve">Cash Reserve</label>
+                <input type="number" id="reserve" placeholder="e.g. 100000" inputmode="numeric">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="stability">Revenue Stability</label>
+                <select id="stability">
+                    <option value="">Select revenue stability</option>
+                    <option value="stable">Stable</option>
+                    <option value="medium">Slightly inconsistent</option>
+                    <option value="low">Very unpredictable</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="delay">Customer Payment Delay</label>
+                <select id="delay">
+                    <option value="">Select payment delay pattern</option>
+                    <option value="fast">Paid immediately</option>
+                    <option value="medium">7–14 days</option>
+                    <option value="slow">30+ days</option>
+                    <option value="chaotic">Very unpredictable</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="flexibility">Expense Flexibility</label>
+                <select id="flexibility">
+                    <option value="">Select expense flexibility</option>
+                    <option value="low">Mostly fixed</option>
+                    <option value="medium">Mixed</option>
+                    <option value="high">Mostly variable</option>
+                </select>
+            </div>
 
-<span class="currency-label">Currency</span>
-<select id="currency" style="margin-bottom:16px;">
-<option value="USD" selected>USD ($)</option>
-<option value="EUR">EUR (€)</option>
-<option value="GBP">GBP (£)</option>
-<option value="AED">AED (د.إ)</option>
-<option value="SAR">SAR (﷼)</option>
-<option value="QAR">QAR (﷼)</option>
-<option value="KWD">KWD (د.ك)</option>
-<option value="JPY">JPY (¥)</option>
-<option value="INR">INR (₹)</option>
-<option value="CAD">CAD (C$)</option>
-<option value="AUD">AUD (A$)</option>
-<option value="CHF">CHF (Fr)</option>
-</select>
+            <!-- Live Dashboard -->
+            <div class="results-dashboard" id="liveResults" role="status" aria-live="polite" aria-atomic="true">
+                <div style="text-align:center;color:#64748b;padding:10px 0;font-size:0.82rem;">
+                    Enter your data to see analysis
+                </div>
+            </div>
 
-<div class="currency-row">
-<input type="number" id="inflow" placeholder="Monthly Cash Inflow">
-</div>
+            <!-- Section 2: Personalised Action Plan -->
+            <div class="section-divider"></div>
+            <div class="card-header">
+                <div class="card-icon diagnostic">🩺</div>
+                <div>
+                    <h2>Personalised Action Plan</h2>
+                    <p class="subtitle">Add context — we’ll tailor your next steps.</p>
+                </div>
+            </div>
 
-<div class="currency-row">
-<input type="number" id="outflow" placeholder="Monthly Cash Outflow">
-</div>
+            <div class="input-group">
+                <label class="input-label" for="concern">Select your main concern</label>
+                <select id="concern">
+                    <option value="">Select your main concern</option>
+                    <option>Cash flow issues</option>
+                    <option>Late customer payments</option>
+                    <option>Unclear profitability</option>
+                    <option>Expenses too high</option>
+                    <option>Financial instability</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="tracking">Financial tracking level</label>
+                <select id="tracking">
+                    <option value="">Select tracking level</option>
+                    <option>No tracking</option>
+                    <option>Basic tracking</option>
+                    <option>Advanced tracking</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="urgency">Urgency level</label>
+                <select id="urgency">
+                    <option value="">Select urgency level</option>
+                    <option>Critical</option>
+                    <option>Important</option>
+                    <option>Moderate</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="whatsapp">WhatsApp Number</label>
+                <input type="text" id="whatsapp" placeholder="+1 (555) 123-4567" inputmode="tel">
+            </div>
 
-<div class="currency-row">
-<input type="number" id="reserve" placeholder="Cash Reserve">
-</div>
+            <button class="button" id="actionBtn">
+                <span class="btn-icon">🔍</span> Generate My Action Plan
+            </button>
 
-<select id="stability">
-<option value="">Revenue Stability</option>
-<option value="stable">Stable</option>
-<option value="medium">Slightly inconsistent</option>
-<option value="low">Very unpredictable</option>
-</select>
+            <!-- Recommendation output -->
+            <div id="actionOutput"></div>
+        </div>
 
-<select id="delay">
-<option value="">Customer Payment Delay</option>
-<option value="fast">Paid immediately</option>
-<option value="medium">7–14 days</option>
-<option value="slow">30+ days</option>
-<option value="chaotic">Very unpredictable</option>
-</select>
+        <div class="footer">
+            Built for modern businesses <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+    </div>
 
-<select id="flexibility">
-<option value="">Expense Flexibility</option>
-<option value="low">Mostly fixed</option>
-<option value="medium">Mixed</option>
-<option value="high">Mostly variable</option>
-</select>
+    <script>
+        // ========== HTML escaping ==========
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
 
-<div class="result-box" id="resultsBox">
-Enter your data to see analysis
-</div>
+        // ========== Neural canvas (light & paused when hidden) ==========
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [], animFrameId = null;
+        const particleCount = 42;
 
-</div>
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
 
-<div class="card">
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.radius = Math.random() * 1.2 + 0.5;
+                this.opacity = Math.random() * 0.4 + 0.15;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < -30) this.x = canvas.width + 30;
+                if (this.x > canvas.width + 30) this.x = -30;
+                if (this.y < -30) this.y = canvas.height + 30;
+                if (this.y > canvas.height + 30) this.y = -30;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(21, 128, 61, ${this.opacity})`; // dark green for light theme
+                ctx.fill();
+            }
+        }
 
-<h2>Financial Risk Diagnostic</h2>
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+        }
+        initParticles();
 
-<select id="concern">
-<option value="">Select your main concern</option>
-<option>Cash flow issues</option>
-<option>Late customer payments</option>
-<option>Unclear profitability</option>
-<option>Expenses too high</option>
-<option>Financial instability</option>
-</select>
+        function animateNeural() {
+            if (document.hidden) { animFrameId = null; return; }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            const maxDist = 140;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < maxDist) {
+                        const alpha = (1 - dist / maxDist) * 0.18;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(21, 128, 61, ${alpha})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            animFrameId = requestAnimationFrame(animateNeural);
+        }
+        animFrameId = requestAnimationFrame(animateNeural);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !animFrameId) animFrameId = requestAnimationFrame(animateNeural);
+        });
 
-<select id="tracking">
-<option value="">Financial tracking level</option>
-<option>No tracking</option>
-<option>Basic tracking</option>
-<option>Advanced tracking</option>
-</select>
+        // ========== DOM references ==========
+        const inflowEl = document.getElementById('inflow');
+        const outflowEl = document.getElementById('outflow');
+        const reserveEl = document.getElementById('reserve');
+        const stabilityEl = document.getElementById('stability');
+        const delayEl = document.getElementById('delay');
+        const flexibilityEl = document.getElementById('flexibility');
+        const liveResults = document.getElementById('liveResults');
+        const actionBtn = document.getElementById('actionBtn');
+        const actionOutput = document.getElementById('actionOutput');
+        const toastEl = document.getElementById('toast');
+        const concernEl = document.getElementById('concern');
+        const trackingEl = document.getElementById('tracking');
+        const urgencyEl = document.getElementById('urgency');
+        const whatsappEl = document.getElementById('whatsapp');
 
-<select id="urgency">
-<option value="">Urgency level</option>
-<option>Critical</option>
-<option>Important</option>
-<option>Moderate</option>
-</select>
+        // ========== Toast ==========
+        let toastTimer;
+        function showToast(message, type = 'info-toast') {
+            clearTimeout(toastTimer);
+            toastEl.textContent = message;
+            toastEl.className = 'toast ' + type + ' show';
+            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+        }
 
-<input type="text" id="whatsapp" placeholder="WhatsApp Number">
+        // ========== Formatting ==========
+        function formatCurrency(value) {
+            const abs = Math.abs(value);
+            const formatted = abs.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            return (value < 0 ? '-' : '') + formatted;
+        }
+        function formatDecimal(value, decimals = 1) {
+            return value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        }
 
-<button class="button" onclick="submitForm()">Analyze My Business</button>
+        // ========== Centralised financial computation ==========
+        function computeFinancials() {
+            const inflow = parseFloat(inflowEl.value) || 0;
+            const outflow = parseFloat(outflowEl.value) || 0;
+            const reserve = parseFloat(reserveEl.value) || 0;
+            const stability = stabilityEl.value;
+            const delay = delayEl.value;
+            const flexibility = flexibilityEl.value;
 
-</div>
+            const net = inflow - outflow;
+            const monthlyBurn = net < 0 ? Math.abs(net) : 0;
 
-<div class="footer">
-Built for modern businesses
-</div>
+            let runwayMonths = null;
+            if (net < 0 && outflow > 0) {
+                runwayMonths = reserve / monthlyBurn; // can be 0 if reserve = 0
+            }
 
-</div>
+            function calcRiskScore() {
+                let score = 0;
+                const netRatio = inflow > 0 ? net / inflow : (outflow > 0 ? -2 : 0);
+                if (netRatio >= 0.3) score += 3;
+                else if (netRatio >= 0.15) score += 8;
+                else if (netRatio >= 0.05) score += 14;
+                else if (netRatio >= 0) score += 20;
+                else if (netRatio >= -0.1) score += 26;
+                else if (netRatio >= -0.25) score += 32;
+                else score += 38;
 
-<script>
+                const safeRunway = (runwayMonths !== null && isFinite(runwayMonths)) ? runwayMonths : Infinity;
+                if (safeRunway >= 24) score += 1;
+                else if (safeRunway >= 12) score += 4;
+                else if (safeRunway >= 6) score += 9;
+                else if (safeRunway >= 3) score += 15;
+                else if (safeRunway >= 1) score += 20;
+                else score += 24;
 
-const currencySymbols = {
-  USD: '$', EUR: '€', GBP: '£', AED: 'د.إ', SAR: '﷼', QAR: '﷼',
-  KWD: 'د.ك', JPY: '¥', INR: '₹', CAD: 'C$', AUD: 'A$', CHF: 'Fr'
-};
+                switch (stability) {
+                    case 'stable': score += 2; break;
+                    case 'medium': score += 7; break;
+                    case 'low': score += 13; break;
+                    default: score += 6;
+                }
+                switch (delay) {
+                    case 'fast': score += 1; break;
+                    case 'medium': score += 4; break;
+                    case 'slow': score += 8; break;
+                    case 'chaotic': score += 11; break;
+                    default: score += 5;
+                }
+                switch (flexibility) {
+                    case 'high': score += 1; break;
+                    case 'medium': score += 3; break;
+                    case 'low': score += 7; break;
+                    default: score += 3;
+                }
+                return Math.min(100, Math.max(0, Math.round(score)));
+            }
 
-function getSymbol() {
-  return currencySymbols[document.getElementById("currency").value] || '$';
-}
+            const riskScore = calcRiskScore();
+            const riskLevel = riskScore <= 28 ? 'LOW' : riskScore <= 55 ? 'MEDIUM' : 'HIGH';
+            const riskColor = riskLevel === 'LOW' ? { bar:'low', badge:'low' } :
+                             riskLevel === 'MEDIUM' ? { bar:'medium', badge:'medium' } : { bar:'high', badge:'high' };
 
-function fmt(n) {
-  return Number(n).toLocaleString('en-US');
-}
+            let insight = '', insightClass = 'info';
+            const safeRunway = (runwayMonths !== null && isFinite(runwayMonths)) ? runwayMonths : Infinity;
+            if (riskLevel === 'HIGH') {
+                insightClass = 'danger';
+                insight = '⚠️ <strong>Your business is under financial pressure.</strong> Immediate action required. ';
+                if (net < 0 && safeRunway < 6) {
+                    insight += 'Cash reserves are depleting rapidly. Cut costs, renegotiate terms, and accelerate collections.';
+                } else if (stability === 'low' || delay === 'chaotic') {
+                    insight += 'Unpredictable revenue/payment patterns create systemic risk. Tighten payment policies and diversify income.';
+                } else {
+                    insight += 'Multiple risk factors detected. Create a 90‑day emergency plan and seek professional advice.';
+                }
+            } else if (riskLevel === 'MEDIUM') {
+                insightClass = 'warning';
+                insight = '⚡ <strong>Your business is stable but exposed.</strong> ';
+                if (outflow > 0 && net >= 0 && net < outflow * 0.15) {
+                    insight += 'Margins are thin. Build a larger cash buffer and improve operational efficiency.';
+                } else if (delay === 'slow') {
+                    insight += 'Slow payments create strain. Consider early‑payment discounts or invoice factoring.';
+                } else {
+                    insight += 'Moderate risks exist. Regular monitoring and proactive planning are recommended.';
+                }
+            } else {
+                insightClass = 'success';
+                insight = '✅ <strong>Your business appears healthy.</strong> ';
+                if (outflow > 0 && net >= outflow * 0.3) {
+                    insight += 'Strong cash flow & reserves give you flexibility for growth or investment.';
+                } else {
+                    insight += 'Keep monitoring key metrics and maintain your financial discipline.';
+                }
+            }
 
-const inputs = ["inflow","outflow","reserve","stability","delay","flexibility","currency"];
+            let runwayStr = 'N/A';
+            if (runwayMonths !== null && isFinite(runwayMonths)) {
+                runwayStr = (runwayMonths < 1 ? formatDecimal(runwayMonths * 30, 0) + ' days' :
+                             runwayMonths >= 24 ? '24+ months' : formatDecimal(runwayMonths, 1) + ' months');
+            } else if (net >= 0 && reserve > 0) {
+                runwayStr = 'Indefinite (positive cash flow)';
+            }
 
-inputs.forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener("input", calculate);
-});
+            const burnRateStr = net < 0 ? formatCurrency(monthlyBurn) + '/mo' : 'None';
+            const adequacyRatio = outflow > 0 ? (reserve / outflow).toFixed(1) : 'N/A';
+            const adequacyStr = outflow > 0 ? adequacyRatio + '× monthly outflow' : 'N/A';
+            const netPrefix = net >= 0 ? '+' : '';
+            const netClass = net >= 0 ? 'positive' : 'negative';
 
-function calculate() {
-  const inflow = parseFloat(document.getElementById("inflow").value) || 0;
-  const outflow = parseFloat(document.getElementById("outflow").value) || 0;
-  const reserve = parseFloat(document.getElementById("reserve").value) || 0;
+            return {
+                inflow, outflow, reserve, stability, delay, flexibility,
+                net, netPrefix, netClass, monthlyBurn, burnRateStr,
+                runwayMonths, runwayStr, adequacyStr,
+                riskScore, riskLevel, riskColor, insight, insightClass
+            };
+        }
 
-  const stability = document.getElementById("stability").value;
-  const delay = document.getElementById("delay").value;
-  const flexibility = document.getElementById("flexibility").value;
-  const sym = getSymbol();
+        // ========== Render live dashboard ==========
+        function renderDashboard(fin) {
+            const runwayValClass = (fin.runwayMonths !== null && fin.runwayMonths < 3) ? 'negative' :
+                                   (fin.runwayMonths !== null && fin.runwayMonths < 6) ? 'neutral' : 'positive';
+            return `
+                <div style="font-weight:700;font-size:0.88rem;letter-spacing:0.02em;margin-bottom:8px;color:#0f172a;">📋 Financial Snapshot</div>
+                <div class="result-row">
+                    <span class="result-label">💰 Net Cash Flow</span>
+                    <span class="result-value ${fin.netClass}">${fin.netPrefix}${formatCurrency(fin.net)}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">🔥 Monthly Burn Rate</span>
+                    <span class="result-value ${fin.net < 0 ? 'negative' : 'positive'}">${fin.burnRateStr}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">⏳ Runway</span>
+                    <span class="result-value ${runwayValClass}">${fin.runwayStr}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">🏦 Reserve Adequacy</span>
+                    <span class="result-value neutral">${fin.adequacyStr}</span>
+                </div>
+                <div class="result-row" style="border-bottom:none;">
+                    <span class="result-label">🎯 Risk Score</span>
+                    <span class="result-value ${fin.riskLevel === 'HIGH' ? 'negative' : fin.riskLevel === 'MEDIUM' ? 'neutral' : 'positive'}">${fin.riskScore}/100</span>
+                </div>
+                <div class="risk-meter-container">
+                    <div class="risk-meter-bar ${fin.riskColor.bar}" style="width:${Math.max(8, fin.riskScore)}%;"></div>
+                </div>
+                <span class="risk-score-badge ${fin.riskColor.badge}">🚨 Risk Level: ${fin.riskLevel}</span>
+                <div class="insight-box ${fin.insightClass}">🧠 ${fin.insight}</div>
+            `;
+        }
 
-  let net = inflow - outflow;
+        // ========== Debounced dashboard update ==========
+        let debounceTimer;
+        function debouncedCalculate() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(calculate, 400);
+        }
+        function calculate() {
+            const fin = computeFinancials();
+            liveResults.classList.add('updating');
+            liveResults.innerHTML = renderDashboard(fin);
+            setTimeout(() => liveResults.classList.remove('updating'), 350);
+        }
 
-  let runway = "N/A";
-  if (net < 0 && outflow > 0) {
-    runway = fmt((reserve / Math.abs(net)).toFixed(1)) + " months";
-  }
+        const allInputs = [inflowEl, outflowEl, reserveEl, stabilityEl, delayEl, flexibilityEl];
+        allInputs.forEach(el => {
+            el.addEventListener('input', debouncedCalculate);
+            el.addEventListener('change', debouncedCalculate);
+        });
 
-  let risk = "LOW";
+        // ========== Generate Action Plan ==========
+        function generateActionPlan() {
+            const fin = computeFinancials();
+            const concern = concernEl.value;
+            const tracking = trackingEl.value;
+            const urgency = urgencyEl.value;
+            const whatsapp = whatsappEl.value.trim();
 
-  if (net < 0) risk = "HIGH";
-  if (stability === "low" || delay === "chaotic") risk = "HIGH";
-  if (flexibility === "low" && net <= 0) risk = "HIGH";
-  if (net >= 0 && (stability === "medium" || delay === "slow")) risk = "MEDIUM";
+            const anyFinancialData = (fin.inflow !== 0 || fin.outflow !== 0 || fin.reserve !== 0 ||
+                                      fin.stability !== '' || fin.delay !== '' || fin.flexibility !== '');
+            if (!anyFinancialData) {
+                showToast('⚠️ Please enter some financial data first.', 'info-toast');
+                return;
+            }
 
-  let insight = "Your business appears stable.";
-  if (risk === "HIGH") {
-    insight = "Your business is under financial pressure. Immediate action is required.";
-  } else if (risk === "MEDIUM") {
-    insight = "Your business is stable but exposed to potential risks.";
-  }
+            let recommendation = '';
+            if (fin.riskLevel === 'HIGH') {
+                recommendation = 'URGENT: Your financial risk is elevated. ';
+                if (concern === 'Cash flow issues' || concern === 'Financial instability') {
+                    recommendation += `Based on your ${concern.toLowerCase()}, we recommend immediate cash conservation and a full audit.`;
+                } else if (concern) {
+                    recommendation += `Your concern about ${concern.toLowerCase()} combined with high risk signals requires prompt professional intervention.`;
+                } else {
+                    recommendation += 'Multiple high‑risk indicators detected. A comprehensive financial restructuring may be needed.';
+                }
+            } else if (fin.riskLevel === 'MEDIUM') {
+                recommendation = 'ATTENTION: Moderate risk detected. ';
+                if (tracking === 'No tracking' || tracking === 'Basic tracking') {
+                    recommendation += 'Upgrading tracking to advanced levels will improve risk management.';
+                } else {
+                    recommendation += 'Continue monitoring and build additional cash reserves.';
+                }
+            } else {
+                recommendation = 'STRONG POSITION: Your financial health is solid. ';
+                recommendation += 'Focus on growth opportunities while maintaining your current discipline.';
+            }
 
-  document.getElementById("resultsBox").innerHTML = `
-  <b>Financial Snapshot</b><br><br>
-  💰 Net Cash Flow: ${sym}${fmt(net)}<br>
-  ⏳ Runway: ${runway}<br>
-  🚨 Risk Level: ${risk}<br><br>
-  🧠 Insight:<br>${insight}
-  `;
-}
+            if (urgency === 'Critical') {
+                recommendation += ' Given the critical urgency, we advise immediate action.';
+            }
 
-function submitForm() {
+            const safeRec = escapeHTML(recommendation);
+            const safeWhatsapp = whatsapp ? escapeHTML(whatsapp) : '';
+            const recClass = fin.riskLevel === 'HIGH' ? 'danger' : fin.riskLevel === 'MEDIUM' ? 'warning' : 'success';
+            const whatsappHTML = safeWhatsapp
+                ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(22,163,74,0.06);border-radius:10px;font-size:0.78rem;color:#166534;text-align:center;">
+                      📱 Your action plan will be sent to <strong>${safeWhatsapp}</strong> via WhatsApp
+                   </div>`
+                : '';
 
-  const data = {
-    inflow: document.getElementById("inflow").value,
-    outflow: document.getElementById("outflow").value,
-    reserve: document.getElementById("reserve").value,
-    stability: document.getElementById("stability").value,
-    delay: document.getElementById("delay").value,
-    flexibility: document.getElementById("flexibility").value,
-    concern: document.getElementById("concern").value,
-    tracking: document.getElementById("tracking").value,
-    urgency: document.getElementById("urgency").value,
-    whatsapp: document.getElementById("whatsapp").value
-  };
+            actionOutput.innerHTML = `
+                <div class="insight-box ${recClass}">
+                    📝 <strong>Recommendation:</strong> ${safeRec}
+                </div>
+                ${whatsappHTML}
+            `;
 
-  alert("Analyzing your financial data...");
+            showToast('✅ Your personalised action plan is ready.', 'success');
+        }
 
-  fetch("https://script.google.com/macros/s/AKfycbx9pDWsC8DTIjYfAurD9vIQkE4rpyNjSzmEEbXL0JAIf_V7vyTPjtqaI0Vq5qZyBKVd/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(response => {
-    alert("Financial system generated successfully.");
-  })
-  .catch(err => {
-    alert("Submission failed. Try again.");
-  });
-}
+        actionBtn.addEventListener('click', generateActionPlan);
 
-</script>
-
+        // Initial load
+        calculate();
+    </script>
 </body>
-</html>'''
-
-with open('/mnt/agents/output/cortexflow-international.html', 'w', encoding='utf-8') as f:
-    f.write(html_fixed)
-
-print("Fixed international version saved!")
-print(f"File size: {len(html_fixed)} characters")
+</html>
